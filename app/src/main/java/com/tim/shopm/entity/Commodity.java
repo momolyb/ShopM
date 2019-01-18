@@ -1,5 +1,8 @@
 package com.tim.shopm.entity;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import org.greenrobot.greendao.annotation.Entity;
 import org.greenrobot.greendao.annotation.Id;
 import org.greenrobot.greendao.annotation.NotNull;
@@ -9,14 +12,13 @@ import com.tim.shopm.greendao.DaoSession;
 import com.tim.shopm.greendao.CommodityDao;
 
 @Entity(active = true)
-public class Commodity{
+public class Commodity implements Parcelable {
     @Id(autoincrement = true)
     public Long id;
     @NotNull
     private String name;
     @NotNull
     private int num;
-    private String image;
     @NotNull
     private float price;
     @NotNull
@@ -32,12 +34,11 @@ public class Commodity{
     }
 
     @Generated(hash = 1744227802)
-    public Commodity(Long id, @NotNull String name, int num, String image,
+    public Commodity(Long id, @NotNull String name, int num,
             float price, @NotNull String bar_code) {
         this.id = id;
         this.name = name;
         this.num = num;
-        this.image = image;
         this.price = price;
         this.bar_code = bar_code;
     }
@@ -56,14 +57,6 @@ public class Commodity{
 
     public void setNum(int num) {
         this.num = num;
-    }
-
-    public String getImage() {
-        return this.image;
-    }
-
-    public void setImage(String image) {
-        this.image = image;
     }
 
     public float getPrice() {
@@ -132,4 +125,38 @@ public class Commodity{
     public void setId(Long id) {
         this.id = id;
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeValue(this.id);
+        dest.writeString(this.name);
+        dest.writeInt(this.num);
+        dest.writeFloat(this.price);
+        dest.writeString(this.bar_code);
+    }
+
+    protected Commodity(Parcel in) {
+        this.id = (Long) in.readValue(Long.class.getClassLoader());
+        this.name = in.readString();
+        this.num = in.readInt();
+        this.price = in.readFloat();
+        this.bar_code = in.readString();
+    }
+
+    public static final Parcelable.Creator<Commodity> CREATOR = new Parcelable.Creator<Commodity>() {
+        @Override
+        public Commodity createFromParcel(Parcel source) {
+            return new Commodity(source);
+        }
+
+        @Override
+        public Commodity[] newArray(int size) {
+            return new Commodity[size];
+        }
+    };
 }

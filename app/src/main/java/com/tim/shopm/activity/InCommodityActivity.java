@@ -19,6 +19,7 @@ package com.tim.shopm.activity;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Handler;
@@ -35,7 +36,6 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.EditText;
-import android.widget.Toast;
 
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.Result;
@@ -48,7 +48,6 @@ import com.google.zxing.client.android.camera.CameraManager;
 import com.tim.shopm.CaptureActivityHandler;
 import com.tim.shopm.R;
 import com.tim.shopm.entity.Commodity;
-import com.tim.shopm.manager.DatabaseManager;
 import com.tim.shopm.model.DataModel;
 import com.tim.shopm.model.LoadDataCallBack;
 
@@ -145,7 +144,7 @@ public final class InCommodityActivity extends Activity implements SurfaceHolder
     protected void onResume() {
         super.onResume();
 
-        // historyManager must be initialized here to update the history preference
+        // historyManager must be initialized here to updateCommodity the history preference
 
         // CameraManager must be initialized here, not in onCreate(). This is necessary because we don't
         // want to open the camera driver and measure the screen size if we're going to show the help on
@@ -251,33 +250,47 @@ public final class InCommodityActivity extends Activity implements SurfaceHolder
      * @param barcode     A greyscale bitmap of the camera data which was decoded.
      */
     public void handleDecode(Result rawResult, Bitmap barcode, float scaleFactor) {
+        upData(rawResult.getText());
+    }
+    void upData(String barCode){
         restartPreviewAfterDelay(0);
+        if (!add(barCode))
+            DataModel.findCommodity(barCode, new LoadDataCallBack<Commodity>() {
+                @Override
+                public void onSuccess(Commodity commodity) {
+                    commodity.setNum(1);
+                    commodities.add(commodity);
+                    adapter.updateData(commodities);
+                }
+
+                @Override
+                public void onError(String msg, int code) {
+                    startNewCommodity(barCode);
+                }
+            });
+    }
+    boolean add(String barCode){
         for (Commodity item :
                 commodities) {
-            if (item.getBar_code().equals(rawResult.getText())) {
+            if (item.getBar_code().equals(barCode)) {
                 item.setNum(item.getNum() + 1);
                 adapter.updateData(commodities);
-                return;
+                return true;
             }
         }
-        DataModel.findCommodity(rawResult.getText(), new LoadDataCallBack<Commodity>() {
-            @Override
-            public void onSuccess(Commodity commodity) {
-                commodity.setNum(1);
-                commodities.add(commodity);
-                adapter.updateData(commodities);
-            }
-
-            @Override
-            public void onError(String msg, int code) {
-                startNewCommodity(rawResult.getText());
-            }
-        });
-
+        return false;
+    }
+    private static final int CODE_ADD = 1;
+    private void startNewCommodity(String bar_code) {
+        startActivityForResult(NewCommodityActivity.add(this,bar_code),CODE_ADD);
     }
 
-    private void startNewCommodity(String bar_code) {
-
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode==RESULT_OK&&requestCode==CODE_ADD){
+            upData(((Commodity)data.getParcelableExtra("data")).getBar_code());
+        }
     }
 
     private void initCamera(SurfaceHolder surfaceHolder) {

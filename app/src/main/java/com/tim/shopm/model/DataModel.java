@@ -1,7 +1,5 @@
 package com.tim.shopm.model;
 
-import android.graphics.Bitmap;
-
 import com.tim.shopm.entity.Commodity;
 import com.tim.shopm.manager.DatabaseManager;
 
@@ -36,12 +34,14 @@ public class DataModel {
     public static void removeCommodity(long id){
         DatabaseManager.getDaoSession().getCommodityDao().deleteByKey(id);
     }
-    public static void updateCommodity(Commodity entity){
+    public static void addCommodity(Commodity entity){
         Commodity temp = DatabaseManager.getDaoSession().getCommodityDao().load(entity.getId());
-        entity.setNum(entity.getNum()+temp.getNum());
+        temp.setNum(entity.getNum()+temp.getNum());
+        updateCommodity(temp);
+    }
+    public static void updateCommodity(Commodity entity){
         DatabaseManager.getDaoSession().getCommodityDao().update(entity);
     }
-
     public static void findCommodity(String barcode,LoadDataCallBack<Commodity> callBack) {
         List<Commodity> temp = DatabaseManager.getDaoSession().getCommodityDao().queryRaw("WHERE bar_code = ?",barcode);
         if (temp.size()>0){
