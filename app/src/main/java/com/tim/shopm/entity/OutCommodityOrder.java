@@ -58,14 +58,6 @@ public class OutCommodityOrder   {
     public void setCommodity_id(Long commodity_id) {
         this.commodity_id = commodity_id;
     }
-    @Keep
-    public Commodity getCommodity() {
-        return commodity;
-    }
-    @Keep
-    public void setCommodity(Commodity commodity) {
-        this.commodity = commodity;
-    }
 
     public String getBar_code() {
         return bar_code;
@@ -148,5 +140,34 @@ public class OutCommodityOrder   {
     public void __setDaoSession(DaoSession daoSession) {
         this.daoSession = daoSession;
         myDao = daoSession != null ? daoSession.getOutCommodityOrderDao() : null;
+    }
+
+    /** To-one relationship, resolved on first access. */
+    @Generated(hash = 1475116964)
+    public Commodity getCommodity() {
+        Long __key = this.commodity_id;
+        if (commodity__resolvedKey == null || !commodity__resolvedKey.equals(__key)) {
+            final DaoSession daoSession = this.daoSession;
+            if (daoSession == null) {
+                throw new DaoException("Entity is detached from DAO context");
+            }
+            CommodityDao targetDao = daoSession.getCommodityDao();
+            Commodity commodityNew = targetDao.load(__key);
+            synchronized (this) {
+                commodity = commodityNew;
+                commodity__resolvedKey = __key;
+            }
+        }
+        return commodity;
+    }
+
+    /** called by internal mechanisms, do not call yourself. */
+    @Generated(hash = 2030056668)
+    public void setCommodity(Commodity commodity) {
+        synchronized (this) {
+            this.commodity = commodity;
+            commodity_id = commodity == null ? null : commodity.getId();
+            commodity__resolvedKey = commodity_id;
+        }
     }
 }

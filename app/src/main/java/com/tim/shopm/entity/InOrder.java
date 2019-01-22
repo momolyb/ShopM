@@ -55,14 +55,6 @@ public class InOrder {
     public void setTime(Date time) {
         this.time = time;
     }
-    @Keep
-    public List<InCommodityOrder> getInCommodityOrders() {
-        return inCommodityOrders;
-    }
-    @Keep
-    public void setInCommodityOrders(List<InCommodityOrder> inCommodityOrders) {
-        this.inCommodityOrders = inCommodityOrders;
-    }
 
     public Long getId() {
         return this.id;
@@ -119,5 +111,27 @@ public class InOrder {
     public void __setDaoSession(DaoSession daoSession) {
         this.daoSession = daoSession;
         myDao = daoSession != null ? daoSession.getInOrderDao() : null;
+    }
+
+    /**
+     * To-many relationship, resolved on first access (and after reset).
+     * Changes to to-many relations are not persisted, make changes to the target entity.
+     */
+    @Generated(hash = 564269643)
+    public List<InCommodityOrder> getInCommodityOrders() {
+        if (inCommodityOrders == null) {
+            final DaoSession daoSession = this.daoSession;
+            if (daoSession == null) {
+                throw new DaoException("Entity is detached from DAO context");
+            }
+            InCommodityOrderDao targetDao = daoSession.getInCommodityOrderDao();
+            List<InCommodityOrder> inCommodityOrdersNew = targetDao._queryInOrder_InCommodityOrders(id);
+            synchronized (this) {
+                if (inCommodityOrders == null) {
+                    inCommodityOrders = inCommodityOrdersNew;
+                }
+            }
+        }
+        return inCommodityOrders;
     }
 }

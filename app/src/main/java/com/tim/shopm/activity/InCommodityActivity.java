@@ -28,6 +28,7 @@ import android.preference.PreferenceManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
+import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.SurfaceHolder;
@@ -118,7 +119,7 @@ public final class InCommodityActivity extends Activity implements SurfaceHolder
             public void onInject(Commodity data, IViewInjector injector) {
                 injector.text(R.id.tv_name, data.getName())
                         .text(R.id.tv_bar_code, data.getBar_code())
-                        .text(R.id.et_num, data.getNum());
+                        .text(R.id.et_num, String.valueOf(data.getNum()));
                 ((EditText) injector.findViewById(R.id.et_num)).addTextChangedListener(new TextWatcher() {
                     @Override
                     public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
@@ -127,6 +128,11 @@ public final class InCommodityActivity extends Activity implements SurfaceHolder
 
                     @Override
                     public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                        if (TextUtils.isEmpty(charSequence)){
+                            commodities.remove(data);
+                            adapter.updateData(commodities);
+                            return;
+                        }
                         data.setNum(Integer.parseInt(charSequence.toString()));
                     }
 
@@ -275,6 +281,11 @@ public final class InCommodityActivity extends Activity implements SurfaceHolder
             if (item.getBar_code().equals(barCode)) {
                 item.setNum(item.getNum() + 1);
                 adapter.updateData(commodities);
+                try {
+                    Thread.sleep(500);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
                 return true;
             }
         }

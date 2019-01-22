@@ -55,14 +55,6 @@ public class Inventory{
     public void setTime(Date time) {
         this.time = time;
     }
-    @Keep
-    public List<InventoryCommodity> getInventoryCommodities() {
-        return inventoryCommodities;
-    }
-    @Keep
-    public void setInventoryCommodities(List<InventoryCommodity> inventoryCommodities) {
-        this.inventoryCommodities = inventoryCommodities;
-    }
 
     public Long getId() {
         return this.id;
@@ -119,5 +111,28 @@ public class Inventory{
     public void __setDaoSession(DaoSession daoSession) {
         this.daoSession = daoSession;
         myDao = daoSession != null ? daoSession.getInventoryDao() : null;
+    }
+
+    /**
+     * To-many relationship, resolved on first access (and after reset).
+     * Changes to to-many relations are not persisted, make changes to the target entity.
+     */
+    @Generated(hash = 597265287)
+    public List<InventoryCommodity> getInventoryCommodities() {
+        if (inventoryCommodities == null) {
+            final DaoSession daoSession = this.daoSession;
+            if (daoSession == null) {
+                throw new DaoException("Entity is detached from DAO context");
+            }
+            InventoryCommodityDao targetDao = daoSession.getInventoryCommodityDao();
+            List<InventoryCommodity> inventoryCommoditiesNew = targetDao
+                    ._queryInventory_InventoryCommodities(id);
+            synchronized (this) {
+                if (inventoryCommodities == null) {
+                    inventoryCommodities = inventoryCommoditiesNew;
+                }
+            }
+        }
+        return inventoryCommodities;
     }
 }

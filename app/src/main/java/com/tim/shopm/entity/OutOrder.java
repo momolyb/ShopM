@@ -27,14 +27,6 @@ public class OutOrder   {
     private Date time;
     @NotNull
     private int pay_type;
-    @Keep
-    public List<OutCommodityOrder> getOutCommodityOrders() {
-        return outCommodityOrders;
-    }
-    @Keep
-    public void setOutCommodityOrders(List<OutCommodityOrder> outCommodityOrders) {
-        this.outCommodityOrders = outCommodityOrders;
-    }
 
     @ToMany(referencedJoinProperty = "out_order_id")
     private List<OutCommodityOrder> outCommodityOrders;
@@ -139,5 +131,27 @@ public class OutOrder   {
     public void __setDaoSession(DaoSession daoSession) {
         this.daoSession = daoSession;
         myDao = daoSession != null ? daoSession.getOutOrderDao() : null;
+    }
+    /**
+     * To-many relationship, resolved on first access (and after reset).
+     * Changes to to-many relations are not persisted, make changes to the target entity.
+     */
+    @Generated(hash = 48813799)
+    public List<OutCommodityOrder> getOutCommodityOrders() {
+        if (outCommodityOrders == null) {
+            final DaoSession daoSession = this.daoSession;
+            if (daoSession == null) {
+                throw new DaoException("Entity is detached from DAO context");
+            }
+            OutCommodityOrderDao targetDao = daoSession.getOutCommodityOrderDao();
+            List<OutCommodityOrder> outCommodityOrdersNew = targetDao
+                    ._queryOutOrder_OutCommodityOrders(id);
+            synchronized (this) {
+                if (outCommodityOrders == null) {
+                    outCommodityOrders = outCommodityOrdersNew;
+                }
+            }
+        }
+        return outCommodityOrders;
     }
 }

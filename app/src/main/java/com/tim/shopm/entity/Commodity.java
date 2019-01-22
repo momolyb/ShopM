@@ -23,24 +23,8 @@ public class Commodity implements Parcelable {
     private float price;
     @NotNull
     private String bar_code;
-    /** Used to resolve relations */
-    @Generated(hash = 2040040024)
-    private transient DaoSession daoSession;
-    /** Used for active entity operations. */
-    @Generated(hash = 1309454251)
-    private transient CommodityDao myDao;
 
     public Commodity() {
-    }
-
-    @Generated(hash = 1744227802)
-    public Commodity(Long id, @NotNull String name, int num,
-            float price, @NotNull String bar_code) {
-        this.id = id;
-        this.name = name;
-        this.num = num;
-        this.price = price;
-        this.bar_code = bar_code;
     }
 
     public String getName() {
@@ -73,6 +57,28 @@ public class Commodity implements Parcelable {
 
     public void setBar_code(String bar_code) {
         this.bar_code = bar_code;
+    }
+
+    public Long getId() {
+        return this.id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeValue(this.id);
+        dest.writeString(this.name);
+        dest.writeInt(this.num);
+        dest.writeFloat(this.price);
+        dest.writeString(this.bar_code);
     }
 
     /**
@@ -118,34 +124,21 @@ public class Commodity implements Parcelable {
         myDao = daoSession != null ? daoSession.getCommodityDao() : null;
     }
 
-    public Long getId() {
-        return this.id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeValue(this.id);
-        dest.writeString(this.name);
-        dest.writeInt(this.num);
-        dest.writeFloat(this.price);
-        dest.writeString(this.bar_code);
-    }
-
     protected Commodity(Parcel in) {
         this.id = (Long) in.readValue(Long.class.getClassLoader());
         this.name = in.readString();
         this.num = in.readInt();
         this.price = in.readFloat();
         this.bar_code = in.readString();
+    }
+
+    @Generated(hash = 505748922)
+    public Commodity(Long id, @NotNull String name, int num, float price, @NotNull String bar_code) {
+        this.id = id;
+        this.name = name;
+        this.num = num;
+        this.price = price;
+        this.bar_code = bar_code;
     }
 
     public static final Parcelable.Creator<Commodity> CREATOR = new Parcelable.Creator<Commodity>() {
@@ -159,4 +152,10 @@ public class Commodity implements Parcelable {
             return new Commodity[size];
         }
     };
+    /** Used to resolve relations */
+    @Generated(hash = 2040040024)
+    private transient DaoSession daoSession;
+    /** Used for active entity operations. */
+    @Generated(hash = 1309454251)
+    private transient CommodityDao myDao;
 }

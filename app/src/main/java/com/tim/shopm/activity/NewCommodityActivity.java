@@ -3,13 +3,11 @@ package com.tim.shopm.activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.PersistableBundle;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -38,12 +36,13 @@ public class NewCommodityActivity extends BaseActivity {
     private String mode;
 
     @Override
-    public void onCreate(Bundle savedInstanceState, PersistableBundle persistentState) {
-        super.onCreate(savedInstanceState, persistentState);
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_commodity);
         initView();
         initDate();
     }
+
     private void setEditable(boolean canEdit){
         mEtPrice.setEnabled(canEdit);
         mEtName.setEnabled(canEdit);
@@ -100,7 +99,11 @@ public class NewCommodityActivity extends BaseActivity {
     }
     void refreshView(){
         mEtName.setText(commodity.getName());
-        mEtPrice.setText(StringFormatUtil.formatMoneyEdit(commodity.getPrice()));
+        if (commodity.getPrice()>0){
+            mEtPrice.setText(StringFormatUtil.formatMoneyEdit(commodity.getPrice()));
+        }else {
+            mEtPrice.setText("");
+        }
         mEtBarCode.setText(commodity.getBar_code());
         mTvNum.setText(String.valueOf(commodity.getNum()));
     }
@@ -115,6 +118,39 @@ public class NewCommodityActivity extends BaseActivity {
         mBtnCreate.setOnClickListener(view -> submit());
         mBtnSave.setOnClickListener(view -> submit());
         mBtnDel.setOnClickListener(view -> delete());
+        mEtName.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                commodity.setName(charSequence.toString());
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+        });
+        mEtPrice.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                if (!TextUtils.isEmpty(charSequence))
+                commodity.setPrice(Float.parseFloat(charSequence.toString()));
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+        });
         mEtBarCode.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
@@ -123,6 +159,7 @@ public class NewCommodityActivity extends BaseActivity {
 
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                commodity.setBar_code(charSequence.toString());
                 DataModel.findCommodity(charSequence.toString().trim(), new LoadDataCallBack<Commodity>() {
                     @Override
                     public void onSuccess(Commodity commodity) {
@@ -202,7 +239,6 @@ public class NewCommodityActivity extends BaseActivity {
         DataModel.updateCommodity(commodity);
     }
 
-    @Override
     protected String getPageTitle() {
         return "商品编辑";
     }

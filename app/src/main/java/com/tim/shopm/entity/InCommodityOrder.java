@@ -31,17 +31,19 @@ public class InCommodityOrder {
     private Long commodity_id;
 
     @ToOne(joinProperty = "commodity_id")
-    private Commodity commodity;
+    private Commodity bindCommodity;
     /** Used to resolve relations */
     @Generated(hash = 2040040024)
     private transient DaoSession daoSession;
     /** Used for active entity operations. */
     @Generated(hash = 519002038)
     private transient InCommodityOrderDao myDao;
-    @Generated(hash = 733609773)
-    private transient Long commodity__resolvedKey;
+    @Generated(hash = 1383153668)
+    private transient Long bindCommodity__resolvedKey;
+
     public InCommodityOrder() {
     }
+
 
     @Generated(hash = 1572865360)
     public InCommodityOrder(Long id, @NotNull String bar_code, @NotNull Date time,
@@ -55,6 +57,7 @@ public class InCommodityOrder {
         this.in_order_id = in_order_id;
         this.commodity_id = commodity_id;
     }
+
 
     public String getBar_code() {
         return bar_code;
@@ -103,14 +106,6 @@ public class InCommodityOrder {
     public void setCommodity_id(Long commodity_id) {
         this.commodity_id = commodity_id;
     }
-    @Keep
-    public Commodity getCommodity() {
-        return commodity;
-    }
-    @Keep
-    public void setCommodity(Commodity commodity) {
-        this.commodity = commodity;
-    }
 
     public Long getId() {
         return this.id;
@@ -119,6 +114,43 @@ public class InCommodityOrder {
     public void setId(Long id) {
         this.id = id;
     }
+
+
+    /** To-one relationship, resolved on first access. */
+    @Generated(hash = 736578216)
+    public Commodity getBindCommodity() {
+        Long __key = this.commodity_id;
+        if (bindCommodity__resolvedKey == null
+                || !bindCommodity__resolvedKey.equals(__key)) {
+            final DaoSession daoSession = this.daoSession;
+            if (daoSession == null) {
+                throw new DaoException("Entity is detached from DAO context");
+            }
+            CommodityDao targetDao = daoSession.getCommodityDao();
+            Commodity bindCommodityNew = targetDao.load(__key);
+            synchronized (this) {
+                bindCommodity = bindCommodityNew;
+                bindCommodity__resolvedKey = __key;
+            }
+        }
+        return bindCommodity;
+    }
+
+
+    /** called by internal mechanisms, do not call yourself. */
+    @Generated(hash = 1465743540)
+    public void setBindCommodity(@NotNull Commodity bindCommodity) {
+        if (bindCommodity == null) {
+            throw new DaoException(
+                    "To-one property 'commodity_id' has not-null constraint; cannot set to-one to null");
+        }
+        synchronized (this) {
+            this.bindCommodity = bindCommodity;
+            commodity_id = bindCommodity.getId();
+            bindCommodity__resolvedKey = commodity_id;
+        }
+    }
+
 
     /**
      * Convenient call for {@link org.greenrobot.greendao.AbstractDao#delete(Object)}.
@@ -132,6 +164,7 @@ public class InCommodityOrder {
         myDao.delete(this);
     }
 
+
     /**
      * Convenient call for {@link org.greenrobot.greendao.AbstractDao#refresh(Object)}.
      * Entity must attached to an entity context.
@@ -143,6 +176,7 @@ public class InCommodityOrder {
         }
         myDao.refresh(this);
     }
+
 
     /**
      * Convenient call for {@link org.greenrobot.greendao.AbstractDao#update(Object)}.
@@ -156,10 +190,12 @@ public class InCommodityOrder {
         myDao.update(this);
     }
 
+
     /** called by internal mechanisms, do not call yourself. */
     @Generated(hash = 1681026528)
     public void __setDaoSession(DaoSession daoSession) {
         this.daoSession = daoSession;
         myDao = daoSession != null ? daoSession.getInCommodityOrderDao() : null;
     }
+
 }

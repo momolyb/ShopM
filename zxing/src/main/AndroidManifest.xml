@@ -42,6 +42,6 @@
         android:name="android.hardware.wifi"
         android:required="false" />
 
-    <application android:allowBackup="true"></application>
+    <application android:allowBackup="false"></application>
 
 </manifest>
