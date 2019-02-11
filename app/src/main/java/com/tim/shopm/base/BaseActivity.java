@@ -8,14 +8,14 @@ import android.widget.TextView;
 
 import com.tim.shopm.R;
 
+import java.lang.reflect.Method;
+
 public abstract class BaseActivity extends AppCompatActivity {
     private TitleViewHolder viewHolder;
     void initTitle() {
         viewHolder = new TitleViewHolder();
         viewHolder.mTitle.setText(getPageTitle());
         setTitle(getPageTitle());
-        viewHolder.mBtnLeft.setOnClickListener(v -> onLeftClick());
-        viewHolder.mBtnRight.setOnClickListener(v -> onRightClick());
     }
 
     @Override
@@ -24,22 +24,16 @@ public abstract class BaseActivity extends AppCompatActivity {
         initTitle();
     }
 
-    public void enableRightButton(@DrawableRes int btnIcon) {
+    public void enableRightButton(@DrawableRes int btnIcon,View.OnClickListener click) {
         viewHolder.mBtnRight.setVisibility(View.VISIBLE);
         viewHolder.mBtnRight.setImageResource(btnIcon);
+        viewHolder.mBtnRight.setOnClickListener(click);
     }
 
-    public void enableLeftButton(@DrawableRes int btnIcon) {
+    public void enableLeftButton(@DrawableRes int btnIcon,View.OnClickListener click) {
         viewHolder.mBtnLeft.setVisibility(View.VISIBLE);
         viewHolder.mBtnLeft.setImageResource(btnIcon);
-    }
-
-    public void onRightClick() {
-
-    }
-
-    public void onLeftClick() {
-
+        viewHolder.mBtnLeft.setOnClickListener(click);
     }
 
     protected abstract String getPageTitle();

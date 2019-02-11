@@ -56,13 +56,18 @@ public class ProductManagerFragment extends BaseFragment {
                         .text(R.id.tv_bar_code,data.getBar_code());
             }
         }).attachTo(rv_content);
-        initData();
     }
 
     @Override
     public void onRightClick() {
         super.onRightClick();
         startActivity(new Intent(getContext(), InCommodityActivity.class));
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        initData();
     }
 
     private void initData() {

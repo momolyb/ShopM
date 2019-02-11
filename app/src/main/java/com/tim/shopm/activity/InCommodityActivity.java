@@ -37,6 +37,7 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.EditText;
+import android.widget.ImageButton;
 
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.Result;
@@ -48,7 +49,10 @@ import com.google.zxing.client.android.ViewfinderView;
 import com.google.zxing.client.android.camera.CameraManager;
 import com.tim.shopm.CaptureActivityHandler;
 import com.tim.shopm.R;
+import com.tim.shopm.base.BaseActivity;
 import com.tim.shopm.entity.Commodity;
+import com.tim.shopm.entity.InCommodityOrder;
+import com.tim.shopm.entity.InOrder;
 import com.tim.shopm.model.DataModel;
 import com.tim.shopm.model.LoadDataCallBack;
 
@@ -59,6 +63,8 @@ import net.idik.lib.slimadapter.viewinjector.IViewInjector;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -69,10 +75,9 @@ import java.util.List;
  * @author dswitkin@google.com (Daniel Switkin)
  * @author Sean Owen
  */
-public final class InCommodityActivity extends Activity implements SurfaceHolder.Callback {
+public final class InCommodityActivity extends BaseActivity implements SurfaceHolder.Callback {
 
     private static final String TAG = InCommodityActivity.class.getSimpleName();
-
 
     private CameraManager cameraManager;
     private CaptureActivityHandler handler;
@@ -107,7 +112,8 @@ public final class InCommodityActivity extends Activity implements SurfaceHolder
         Window window = getWindow();
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         setContentView(R.layout.activity_in_commodity);
-
+        enableLeftButton(R.mipmap.ic_launcher, view -> onBackPressed());
+        enableRightButton(R.mipmap.ic_launcher, view -> submit());
         hasSurface = false;
         inactivityTimer = new InactivityTimer(this);
         beepManager = new BeepManager(this);
@@ -119,7 +125,27 @@ public final class InCommodityActivity extends Activity implements SurfaceHolder
             public void onInject(Commodity data, IViewInjector injector) {
                 injector.text(R.id.tv_name, data.getName())
                         .text(R.id.tv_bar_code, data.getBar_code())
+                        .text(R.id.et_price,String.valueOf(data.getPrice()))
                         .text(R.id.et_num, String.valueOf(data.getNum()));
+                ((EditText) injector.findViewById(R.id.et_price)).addTextChangedListener(new TextWatcher() {
+                    @Override
+                    public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+                    }
+
+                    @Override
+                    public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                        if (TextUtils.isEmpty(charSequence)) {
+                            charSequence = "0";
+                        }
+                        data.setPrice(Float.parseFloat(charSequence.toString()));
+                    }
+
+                    @Override
+                    public void afterTextChanged(Editable editable) {
+
+                    }
+                });
                 ((EditText) injector.findViewById(R.id.et_num)).addTextChangedListener(new TextWatcher() {
                     @Override
                     public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
@@ -128,10 +154,8 @@ public final class InCommodityActivity extends Activity implements SurfaceHolder
 
                     @Override
                     public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                        if (TextUtils.isEmpty(charSequence)){
-                            commodities.remove(data);
-                            adapter.updateData(commodities);
-                            return;
+                        if (TextUtils.isEmpty(charSequence)) {
+                            charSequence = "0";
                         }
                         data.setNum(Integer.parseInt(charSequence.toString()));
                     }
@@ -146,9 +170,38 @@ public final class InCommodityActivity extends Activity implements SurfaceHolder
         PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
     }
 
+    private void submit() {
+        InOrder inOrder = new InOrder();
+        inOrder.setTime(new Date());
+        DataModel.insertInOrder(inOrder);
+        for (Iterator<Commodity> it = commodities.iterator(); it.hasNext(); ) {
+            Commodity commodity = it.next();
+            if (commodity.getNum()<=0){
+                it.remove();
+                continue;
+            }
+            InCommodityOrder incomodity = new InCommodityOrder();
+            incomodity.setBindCommodity(commodity);
+            incomodity.setNum(commodity.getNum());
+            incomodity.setPrice(commodity.getPrice());
+            incomodity.setTime(new Date());
+            incomodity.setIn_order_id(inOrder.getId());
+            DataModel.insertInCommodityOrder(incomodity);
+            DataModel.addCommodity(commodity);
+        }
+        if (commodities.size()==0){
+            DataModel.removeInOrder(inOrder.getId());
+        }
+        finish();
+    }
+
     @Override
     protected void onResume() {
         super.onResume();
+        init();
+    }
+
+    void init() {
 
         // historyManager must be initialized here to updateCommodity the history preference
 
@@ -195,7 +248,8 @@ public final class InCommodityActivity extends Activity implements SurfaceHolder
         inactivityTimer.onPause();
         ambientLightManager.stop();
         beepManager.close();
-        cameraManager.closeDriver();
+        if (cameraManager != null)
+            cameraManager.closeDriver();
         //historyManager = null; // Keep for onActivityResult
         if (!hasSurface) {
             SurfaceView surfaceView = findViewById(R.id.preview_view);
@@ -258,13 +312,15 @@ public final class InCommodityActivity extends Activity implements SurfaceHolder
     public void handleDecode(Result rawResult, Bitmap barcode, float scaleFactor) {
         upData(rawResult.getText());
     }
-    void upData(String barCode){
-        restartPreviewAfterDelay(0);
+
+    void upData(String barCode) {
+        restartPreviewAfterDelay(500);
         if (!add(barCode))
             DataModel.findCommodity(barCode, new LoadDataCallBack<Commodity>() {
                 @Override
                 public void onSuccess(Commodity commodity) {
                     commodity.setNum(1);
+                    commodity.setPrice(DataModel.lastInCommodityOrder()==null?0:DataModel.lastInCommodityOrder().getPrice());
                     commodities.add(commodity);
                     adapter.updateData(commodities);
                 }
@@ -275,32 +331,30 @@ public final class InCommodityActivity extends Activity implements SurfaceHolder
                 }
             });
     }
-    boolean add(String barCode){
+
+    boolean add(String barCode) {
         for (Commodity item :
                 commodities) {
             if (item.getBar_code().equals(barCode)) {
                 item.setNum(item.getNum() + 1);
                 adapter.updateData(commodities);
-                try {
-                    Thread.sleep(500);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
                 return true;
             }
         }
         return false;
     }
+
     private static final int CODE_ADD = 1;
+
     private void startNewCommodity(String bar_code) {
-        startActivityForResult(NewCommodityActivity.add(this,bar_code),CODE_ADD);
+        startActivityForResult(NewCommodityActivity.add(this, bar_code), CODE_ADD);
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode==RESULT_OK&&requestCode==CODE_ADD){
-            upData(((Commodity)data.getParcelableExtra("data")).getBar_code());
+        if (resultCode == RESULT_OK && requestCode == CODE_ADD) {
+            upData(((Commodity) data.getParcelableExtra("data")).getBar_code());
         }
     }
 
@@ -352,5 +406,10 @@ public final class InCommodityActivity extends Activity implements SurfaceHolder
 
     public void drawViewfinder() {
         viewfinderView.drawViewfinder();
+    }
+
+    @Override
+    protected String getPageTitle() {
+        return "进货";
     }
 }

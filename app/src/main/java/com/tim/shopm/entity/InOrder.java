@@ -19,9 +19,8 @@ public class InOrder {
     @Id(autoincrement = true)
     public Long id;
     @NotNull
-    private float money;
-    @NotNull
     private Date time;
+
     @ToMany(referencedJoinProperty = "in_order_id")
     private List<InCommodityOrder> inCommodityOrders;
     /** Used to resolve relations */
@@ -33,20 +32,13 @@ public class InOrder {
     public InOrder() {
     }
 
-    @Generated(hash = 1425170485)
-    public InOrder(Long id, float money, @NotNull Date time) {
+
+    @Generated(hash = 927504490)
+    public InOrder(Long id, @NotNull Date time) {
         this.id = id;
-        this.money = money;
         this.time = time;
     }
 
-    public float getMoney() {
-        return money;
-    }
-
-    public void setMoney(float money) {
-        this.money = money;
-    }
 
     public Date getTime() {
         return time;
@@ -64,54 +56,6 @@ public class InOrder {
         this.id = id;
     }
 
-    /** Resets a to-many relationship, making the next get call to query for a fresh result. */
-    @Generated(hash = 760465908)
-    public synchronized void resetInCommodityOrders() {
-        inCommodityOrders = null;
-    }
-
-    /**
-     * Convenient call for {@link org.greenrobot.greendao.AbstractDao#delete(Object)}.
-     * Entity must attached to an entity context.
-     */
-    @Generated(hash = 128553479)
-    public void delete() {
-        if (myDao == null) {
-            throw new DaoException("Entity is detached from DAO context");
-        }
-        myDao.delete(this);
-    }
-
-    /**
-     * Convenient call for {@link org.greenrobot.greendao.AbstractDao#refresh(Object)}.
-     * Entity must attached to an entity context.
-     */
-    @Generated(hash = 1942392019)
-    public void refresh() {
-        if (myDao == null) {
-            throw new DaoException("Entity is detached from DAO context");
-        }
-        myDao.refresh(this);
-    }
-
-    /**
-     * Convenient call for {@link org.greenrobot.greendao.AbstractDao#update(Object)}.
-     * Entity must attached to an entity context.
-     */
-    @Generated(hash = 713229351)
-    public void update() {
-        if (myDao == null) {
-            throw new DaoException("Entity is detached from DAO context");
-        }
-        myDao.update(this);
-    }
-
-    /** called by internal mechanisms, do not call yourself. */
-    @Generated(hash = 924774995)
-    public void __setDaoSession(DaoSession daoSession) {
-        this.daoSession = daoSession;
-        myDao = daoSession != null ? daoSession.getInOrderDao() : null;
-    }
 
     /**
      * To-many relationship, resolved on first access (and after reset).
@@ -125,7 +69,8 @@ public class InOrder {
                 throw new DaoException("Entity is detached from DAO context");
             }
             InCommodityOrderDao targetDao = daoSession.getInCommodityOrderDao();
-            List<InCommodityOrder> inCommodityOrdersNew = targetDao._queryInOrder_InCommodityOrders(id);
+            List<InCommodityOrder> inCommodityOrdersNew = targetDao
+                    ._queryInOrder_InCommodityOrders(id);
             synchronized (this) {
                 if (inCommodityOrders == null) {
                     inCommodityOrders = inCommodityOrdersNew;
@@ -134,4 +79,59 @@ public class InOrder {
         }
         return inCommodityOrders;
     }
+
+
+    /** Resets a to-many relationship, making the next get call to query for a fresh result. */
+    @Generated(hash = 760465908)
+    public synchronized void resetInCommodityOrders() {
+        inCommodityOrders = null;
+    }
+
+
+    /**
+     * Convenient call for {@link org.greenrobot.greendao.AbstractDao#delete(Object)}.
+     * Entity must attached to an entity context.
+     */
+    @Generated(hash = 128553479)
+    public void delete() {
+        if (myDao == null) {
+            throw new DaoException("Entity is detached from DAO context");
+        }
+        myDao.delete(this);
+    }
+
+
+    /**
+     * Convenient call for {@link org.greenrobot.greendao.AbstractDao#refresh(Object)}.
+     * Entity must attached to an entity context.
+     */
+    @Generated(hash = 1942392019)
+    public void refresh() {
+        if (myDao == null) {
+            throw new DaoException("Entity is detached from DAO context");
+        }
+        myDao.refresh(this);
+    }
+
+
+    /**
+     * Convenient call for {@link org.greenrobot.greendao.AbstractDao#update(Object)}.
+     * Entity must attached to an entity context.
+     */
+    @Generated(hash = 713229351)
+    public void update() {
+        if (myDao == null) {
+            throw new DaoException("Entity is detached from DAO context");
+        }
+        myDao.update(this);
+    }
+
+
+    /** called by internal mechanisms, do not call yourself. */
+    @Generated(hash = 924774995)
+    public void __setDaoSession(DaoSession daoSession) {
+        this.daoSession = daoSession;
+        myDao = daoSession != null ? daoSession.getInOrderDao() : null;
+    }
+
 }

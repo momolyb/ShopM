@@ -18,18 +18,14 @@ public class InCommodityOrder {
     @Id(autoincrement = true)
     public Long id;
     @NotNull
-    private String bar_code;
-    @NotNull
     private Date time;
     @NotNull
     private float price;
     @NotNull
     private int num;
-    @NotNull
     private Long in_order_id;
     @NotNull
     private Long commodity_id;
-
     @ToOne(joinProperty = "commodity_id")
     private Commodity bindCommodity;
     /** Used to resolve relations */
@@ -45,12 +41,10 @@ public class InCommodityOrder {
     }
 
 
-    @Generated(hash = 1572865360)
-    public InCommodityOrder(Long id, @NotNull String bar_code, @NotNull Date time,
-            float price, int num, @NotNull Long in_order_id,
+    @Generated(hash = 1679035397)
+    public InCommodityOrder(Long id, @NotNull Date time, float price, int num, Long in_order_id,
             @NotNull Long commodity_id) {
         this.id = id;
-        this.bar_code = bar_code;
         this.time = time;
         this.price = price;
         this.num = num;
@@ -58,14 +52,6 @@ public class InCommodityOrder {
         this.commodity_id = commodity_id;
     }
 
-
-    public String getBar_code() {
-        return bar_code;
-    }
-
-    public void setBar_code(String bar_code) {
-        this.bar_code = bar_code;
-    }
 
     public Date getTime() {
         return time;
@@ -101,10 +87,6 @@ public class InCommodityOrder {
 
     public Long getCommodity_id() {
         return commodity_id;
-    }
-
-    public void setCommodity_id(Long commodity_id) {
-        this.commodity_id = commodity_id;
     }
 
     public Long getId() {
@@ -196,6 +178,11 @@ public class InCommodityOrder {
     public void __setDaoSession(DaoSession daoSession) {
         this.daoSession = daoSession;
         myDao = daoSession != null ? daoSession.getInCommodityOrderDao() : null;
+    }
+
+
+    public void setCommodity_id(Long commodity_id) {
+        this.commodity_id = commodity_id;
     }
 
 }

@@ -18,8 +18,6 @@ public class OutCommodityOrder   {
     @Id(autoincrement = true)
     public Long id;
     @NotNull
-    private String bar_code;
-    @NotNull
     private Date time;
     @NotNull
     private int num;
@@ -40,11 +38,10 @@ public class OutCommodityOrder   {
     public OutCommodityOrder() {
     }
 
-    @Generated(hash = 1000141468)
-    public OutCommodityOrder(Long id, @NotNull String bar_code, @NotNull Date time,
-            int num, @NotNull Long out_order_id, Long commodity_id) {
+    @Generated(hash = 1507052281)
+    public OutCommodityOrder(Long id, @NotNull Date time, int num, @NotNull Long out_order_id,
+            Long commodity_id) {
         this.id = id;
-        this.bar_code = bar_code;
         this.time = time;
         this.num = num;
         this.out_order_id = out_order_id;
@@ -57,14 +54,6 @@ public class OutCommodityOrder   {
 
     public void setCommodity_id(Long commodity_id) {
         this.commodity_id = commodity_id;
-    }
-
-    public String getBar_code() {
-        return bar_code;
-    }
-
-    public void setBar_code(String bar_code) {
-        this.bar_code = bar_code;
     }
 
     public Date getTime() {

@@ -1,5 +1,6 @@
 package com.tim.shopm;
 
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.design.widget.TabLayout.Tab;
@@ -10,6 +11,7 @@ import android.view.View;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
+import com.tim.common.PermissionsUtils;
 import com.tim.shopm.adapter.MyPagerAdapter;
 import com.tim.shopm.fragment.ProductManagerFragment;
 
@@ -40,6 +42,11 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         initView();
+        try {
+            PermissionsUtils.requestPermissions(this, 0, null, getPackageManager().getPackageInfo(getApplicationContext().getPackageName(), PackageManager.GET_PERMISSIONS).requestedPermissions);
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
     }
 
     private void initView() {
