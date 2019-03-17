@@ -23,18 +23,11 @@
             android:layout_gravity="center"
             android:textSize="17dp"
             />
-        <TextView
-            android:id="@+id/tv_msg"
-            android:layout_width="wrap_content"
+        <EditText
+            android:id="@+id/et_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:textColor="#333"
-            android:layout_marginRight="16dp"
-            android:layout_marginLeft="16dp"
-            android:textSize="15dp"
-            android:text="接单成功啦
-请安排会计人员开始记账吧"
-            android:gravity="center"/>
+            android:focusableInTouchMode="true"/>
         <View
             android:layout_width="match_parent"
             android:layout_marginTop="8dp"

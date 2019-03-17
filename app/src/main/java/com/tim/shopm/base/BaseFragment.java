@@ -24,26 +24,22 @@ public abstract class BaseFragment extends Fragment {
         viewHolder = new TitleViewHolder(getView());
         viewHolder.mTitle.setText(getPageTitle());
         getActivity().setTitle(getPageTitle());
-        viewHolder.mBtnLeft.setOnClickListener(v -> onLeftClick());
-        viewHolder.mBtnRight.setOnClickListener(view -> onRightClick());
     }
 
-    public void enableRightButton(@DrawableRes int btnIcon) {
+    public void enableRightButton(@DrawableRes int btnIcon,View.OnClickListener click) {
         viewHolder.mBtnRight.setVisibility(View.VISIBLE);
         viewHolder.mBtnRight.setImageResource(btnIcon);
+        viewHolder.mBtnRight.setOnClickListener(click);
     }
-
-    public void enableLeftButton(@DrawableRes int btnIcon) {
+    public void enableRight2Button(@DrawableRes int btnIcon,View.OnClickListener click) {
+        viewHolder.mBtnRight.setVisibility(View.VISIBLE);
+        viewHolder.mBtnRight.setImageResource(btnIcon);
+        viewHolder.mBtnRight.setOnClickListener(click);
+    }
+    public void enableLeftButton(@DrawableRes int btnIcon,View.OnClickListener click) {
         viewHolder.mBtnLeft.setVisibility(View.VISIBLE);
         viewHolder.mBtnLeft.setImageResource(btnIcon);
-    }
-
-    public void onRightClick() {
-
-    }
-
-    public void onLeftClick() {
-
+        viewHolder.mBtnLeft.setOnClickListener(click);
     }
 
     protected abstract String getPageTitle();

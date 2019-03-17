@@ -50,6 +50,7 @@ import com.google.zxing.client.android.camera.CameraManager;
 import com.tim.shopm.CaptureActivityHandler;
 import com.tim.shopm.R;
 import com.tim.shopm.base.BaseActivity;
+import com.tim.shopm.base.CaptureActivity;
 import com.tim.shopm.entity.Commodity;
 import com.tim.shopm.entity.InCommodityOrder;
 import com.tim.shopm.entity.InOrder;
@@ -75,7 +76,7 @@ import java.util.List;
  * @author dswitkin@google.com (Daniel Switkin)
  * @author Sean Owen
  */
-public final class InCommodityActivity extends BaseActivity implements SurfaceHolder.Callback {
+public final class InCommodityActivity extends CaptureActivity implements SurfaceHolder.Callback {
 
     private static final String TAG = InCommodityActivity.class.getSimpleName();
 
@@ -213,7 +214,7 @@ public final class InCommodityActivity extends BaseActivity implements SurfaceHo
 //    cameraManager.setManualFramingRect(1920, 1080);
         viewfinderView = findViewById(R.id.viewfinder_view);
         viewfinderView.setCameraManager(cameraManager);
-
+        viewfinderView.setOnClickListener(view -> startNewCommodity(String.valueOf(Math.random())));
         handler = null;
 
         resetStatusView();

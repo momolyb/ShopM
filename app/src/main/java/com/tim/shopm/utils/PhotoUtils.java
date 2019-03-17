@@ -1,16 +1,15 @@
-package com.linkever.ikeepcloud.common.utils;
+package com.tim.shopm.utils;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.app.Dialog;
+import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
-import android.graphics.Camera;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
@@ -26,10 +25,11 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.PopupWindow;
 
-import com.linkever.ikeepcloud.common.R;
+
+import com.tim.common.ToastUtil;
+import com.tim.shopm.R;
 
 import java.io.File;
-import java.util.HashMap;
 import java.util.Objects;
 
 import static android.app.Activity.RESULT_OK;
@@ -37,7 +37,7 @@ import static android.app.Activity.RESULT_OK;
 /**
  * @author Liuyibo
  */
-public class PhotoUtils{
+public class PhotoUtils {
     private  final String TAG = "PhotoUtils";
     private  final int CODE_GALLERY_REQUEST = 0xa0;
     private  final int CODE_CAMERA_REQUEST = 0xa1;
@@ -130,6 +130,17 @@ public class PhotoUtils{
         this.cropImageUri = Uri.fromFile(fileCropUri);
         this.imageUri = Uri.fromFile(fileUri);
     }
+
+    /**
+     * 只使用相册时调用
+     * @param context
+     */
+    public PhotoUtils(Object context) {
+        this.context = context;
+        this.outputX = -1;
+        this.outputY = -1;
+    }
+
     private PopupWindow window;
     public void show(View view){
         if (window==null){
@@ -244,7 +255,7 @@ public class PhotoUtils{
                 || ContextCompat.checkSelfPermission(getContext(context), Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
 
             if (ActivityCompat.shouldShowRequestPermissionRationale(getActivity(context), Manifest.permission.CAMERA)) {
-                ToastUtils.shortToast("您已经拒绝过一次");
+                ToastUtil.showDefaultShortToast(getContext(context),"您已经拒绝过一次");
             }
             ActivityCompat.requestPermissions(getActivity(context), new String[]{Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE}, CAMERA_PERMISSIONS_REQUEST_CODE);
         } else {//有权限直接调用系统相机拍照
@@ -252,7 +263,7 @@ public class PhotoUtils{
 
                 takePicture(  CODE_CAMERA_REQUEST);
             } else {
-                ToastUtils.shortToast("设备没有SD卡！");
+                ToastUtil.showDefaultShortToast(getContext(context),"设备没有SD卡！");
             }
         }
     }
@@ -261,7 +272,7 @@ public class PhotoUtils{
      * 自动获取sdk权限
      */
 
-    private void autoObtainStoragePermission() {
+    public void autoObtainStoragePermission() {
         if (ContextCompat.checkSelfPermission(getContext(context), Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(getActivity(context), new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, STORAGE_PERMISSIONS_REQUEST_CODE);
         } else {
@@ -279,11 +290,11 @@ public class PhotoUtils{
 
                         takePicture( CODE_CAMERA_REQUEST);
                     } else {
-                        ToastUtils.shortToast("设备没有SD卡！");
+                        ToastUtil.showDefaultShortToast(getContext(context),"设备没有SD卡！");
                     }
                 } else {
 
-                    ToastUtils.shortToast("请允许打开相机！！");
+                    ToastUtil.showDefaultShortToast(getContext(context),"请允许打开相机！！");
                 }
                 break;
 
@@ -294,7 +305,7 @@ public class PhotoUtils{
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     openPic(CODE_GALLERY_REQUEST);
                 } else {
-                    ToastUtils.shortToast("请允许打操作SDCard！！");
+                    ToastUtil.showDefaultShortToast(getContext(context),"请允许打操作SDCard！！");
                 }
                 break;
             default:
@@ -312,13 +323,16 @@ public class PhotoUtils{
                 case CODE_GALLERY_REQUEST:
                     if (hasSdcard()) {
                         Uri newUri = Uri.parse(getPath(data.getData()));
+                        if (outputX==-1||outputY==-1){
+                            return newUri;
+                        }
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                            newUri = FileProvider.getUriForFile(getContext(context), "com.linkever.fileprovider", new File(newUri.getPath()));
+                            newUri = FileProvider.getUriForFile(getContext(context), "com.tim.fileprovider", new File(newUri.getPath()));
                         }
                         cropImageUri( newUri, cropImageUri, 1, 1, outputX, outputY, CODE_RESULT_REQUEST);
                         return newUri;
                     } else {
-                        ToastUtils.shortToast("设备没有SD卡！");
+                        ToastUtil.showDefaultShortToast(getContext(context),"设备没有SD卡！");
                     }
                 case CODE_RESULT_REQUEST:
                     return cropImageUri;
@@ -481,5 +495,4 @@ public class PhotoUtils{
     private static Context getContext(Object context){
         return Objects.requireNonNull(context instanceof Fragment ? ((Fragment) context).getContext() : ((Activity) context).getBaseContext());
     }
-
 }

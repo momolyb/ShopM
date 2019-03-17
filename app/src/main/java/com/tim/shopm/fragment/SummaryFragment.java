@@ -25,7 +25,7 @@ import net.idik.lib.slimadapter.viewinjector.IViewInjector;
 
 import java.util.List;
 
-public class ProductManagerFragment extends BaseFragment {
+public class SummaryFragment extends BaseFragment {
     private RecyclerView rv_content;
     private SlimAdapterEx adapter;
 

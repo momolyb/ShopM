@@ -24,6 +24,18 @@
         </activity>
         <activity android:name=".activity.InCommodityActivity" />
         <activity android:name=".activity.NewCommodityActivity" />
+        <activity android:name=".activity.SellCommodityActivity" />
+        <activity android:name=".activity.SettingActivity" />
+        <activity android:name=".activity.PayActivity" />
+        <provider android:name="android.support.v4.content.FileProvider"
+
+            android:authorities="com.tim.fileprovider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths" />
+        </provider>
     </application>
 
 </manifest>

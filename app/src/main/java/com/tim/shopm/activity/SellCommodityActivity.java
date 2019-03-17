@@ -17,7 +17,6 @@
 
 package com.tim.shopm.activity;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -36,8 +35,9 @@ import android.view.SurfaceView;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageButton;
+import android.widget.TextView;
 
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.Result;
@@ -47,14 +47,19 @@ import com.google.zxing.client.android.FinishListener;
 import com.google.zxing.client.android.InactivityTimer;
 import com.google.zxing.client.android.ViewfinderView;
 import com.google.zxing.client.android.camera.CameraManager;
+import com.tim.common.ToastUtil;
 import com.tim.shopm.CaptureActivityHandler;
 import com.tim.shopm.R;
-import com.tim.shopm.base.BaseActivity;
+import com.tim.shopm.base.CaptureActivity;
 import com.tim.shopm.entity.Commodity;
 import com.tim.shopm.entity.InCommodityOrder;
 import com.tim.shopm.entity.InOrder;
+import com.tim.shopm.entity.OutCommodityOrder;
+import com.tim.shopm.entity.OutOrder;
 import com.tim.shopm.model.DataModel;
 import com.tim.shopm.model.LoadDataCallBack;
+import com.tim.shopm.utils.DialogUtil;
+import com.tim.shopm.utils.StringFormatUtil;
 
 import net.idik.lib.slimadapter.SlimAdapter;
 import net.idik.lib.slimadapter.SlimInjector;
@@ -67,6 +72,10 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
+import static com.tim.shopm.entity.OutOrder.TYPE_ALI;
+import static com.tim.shopm.entity.OutOrder.TYPE_CASH;
+import static com.tim.shopm.entity.OutOrder.TYPE_WX;
+
 /**
  * This activity opens the camera and does the actual scanning on a background thread. It draws a
  * viewfinder to help the user place the barcode correctly, shows feedback as the image processing
@@ -75,9 +84,9 @@ import java.util.List;
  * @author dswitkin@google.com (Daniel Switkin)
  * @author Sean Owen
  */
-public final class InCommodityActivity extends BaseActivity implements SurfaceHolder.Callback {
+public final class SellCommodityActivity extends CaptureActivity implements SurfaceHolder.Callback {
 
-    private static final String TAG = InCommodityActivity.class.getSimpleName();
+    private static final String TAG = SellCommodityActivity.class.getSimpleName();
 
     private CameraManager cameraManager;
     private CaptureActivityHandler handler;
@@ -92,6 +101,9 @@ public final class InCommodityActivity extends BaseActivity implements SurfaceHo
     private List<Commodity> commodities = new ArrayList<>();
     private RecyclerView rv_content;
     private SlimAdapter adapter;
+    private TextView tv_price;
+    private Button btn_pay;
+    private int CODE_PAY = 0x123;
 
     public ViewfinderView getViewfinderView() {
         return viewfinderView;
@@ -111,41 +123,24 @@ public final class InCommodityActivity extends BaseActivity implements SurfaceHo
 
         Window window = getWindow();
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-        setContentView(R.layout.activity_in_commodity);
+        setContentView(R.layout.activity_out_commodity);
         enableLeftButton(R.mipmap.ic_launcher, view -> onBackPressed());
-        enableRightButton(R.mipmap.ic_launcher, view -> submit());
+        enableRightButton(R.mipmap.ic_launcher, view -> edit());
         hasSurface = false;
         inactivityTimer = new InactivityTimer(this);
         beepManager = new BeepManager(this);
         ambientLightManager = new AmbientLightManager(this);
         rv_content = findViewById(R.id.rv_content);
         rv_content.setLayoutManager(new LinearLayoutManager(this));
-        adapter = SlimAdapter.create().register(R.layout.item_in_commodity, new SlimInjector<Commodity>() {
+        tv_price = findViewById(R.id.tv_price);
+        btn_pay = findViewById(R.id.btn_pay);
+        btn_pay.setOnClickListener(view -> pay());
+        adapter = SlimAdapter.create().register(R.layout.item_out_commodity, new SlimInjector<Commodity>() {
             @Override
             public void onInject(Commodity data, IViewInjector injector) {
                 injector.text(R.id.tv_name, data.getName())
-                        .text(R.id.tv_bar_code, data.getBar_code())
-                        .text(R.id.et_price,String.valueOf(data.getPrice()))
+                        .text(R.id.et_price, String.valueOf(data.getPrice()))
                         .text(R.id.et_num, String.valueOf(data.getNum()));
-                ((EditText) injector.findViewById(R.id.et_price)).addTextChangedListener(new TextWatcher() {
-                    @Override
-                    public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-                    }
-
-                    @Override
-                    public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                        if (TextUtils.isEmpty(charSequence)) {
-                            charSequence = "0";
-                        }
-                        data.setPrice(Float.parseFloat(charSequence.toString()));
-                    }
-
-                    @Override
-                    public void afterTextChanged(Editable editable) {
-
-                    }
-                });
                 ((EditText) injector.findViewById(R.id.et_num)).addTextChangedListener(new TextWatcher() {
                     @Override
                     public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
@@ -157,7 +152,18 @@ public final class InCommodityActivity extends BaseActivity implements SurfaceHo
                         if (TextUtils.isEmpty(charSequence)) {
                             charSequence = "0";
                         }
+                        while (charSequence.length() > 1 && charSequence.toString().startsWith("0")) {
+                            charSequence = charSequence.toString().substring(1);
+                            ((EditText) injector.findViewById(R.id.et_num)).setText(charSequence);
+                            ((EditText) injector.findViewById(R.id.et_num)).setSelection(charSequence.length());
+                        }
+                        if (charSequence.length() > 5) {
+                            charSequence = charSequence.subSequence(0, charSequence.length() - 1);
+                            ((EditText) injector.findViewById(R.id.et_num)).setText(charSequence);
+                            ((EditText) injector.findViewById(R.id.et_num)).setSelection(charSequence.length());
+                        }
                         data.setNum(Integer.parseInt(charSequence.toString()));
+                        refreshPrice();
                     }
 
                     @Override
@@ -170,29 +176,61 @@ public final class InCommodityActivity extends BaseActivity implements SurfaceHo
         PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
     }
 
-    private void submit() {
-        InOrder inOrder = new InOrder();
-        inOrder.setTime(new Date());
-        DataModel.insertInOrder(inOrder);
+    private void pay() {
+        DialogUtil.showPayWindows(this, new DialogUtil.OnSelectPayMode() {
+            @Override
+            public void select(int mode) {
+                model = mode;
+                switch (mode) {
+                    case TYPE_ALI:
+                    case TYPE_WX:
+                        startActivityForResult(PayActivity.getIntent(SellCommodityActivity.this,mode),CODE_PAY);
+                        break;
+                    case TYPE_CASH:
+                        ToastUtil.showDefaultShortToast(SellCommodityActivity.this, "已使用现金支付");
+                        sell(mode);
+                        break;
+                    default:
+                        break;
+                }
+            }
+        }, null, "取消", getCurrentFocus());
+    }
+    public int model;
+
+    void sell(int model) {
+        OutOrder outOrder = new OutOrder();
+        outOrder.setTime(new Date());
+        outOrder.setPay_type(model);
+        DataModel.insertOutOrder(outOrder);
         for (Iterator<Commodity> it = commodities.iterator(); it.hasNext(); ) {
             Commodity commodity = it.next();
-            if (commodity.getNum()<=0){
+            if (commodity.getNum() <= 0) {
                 it.remove();
                 continue;
             }
-            InCommodityOrder incomodity = new InCommodityOrder();
-            incomodity.setBindCommodity(commodity);
-            incomodity.setNum(commodity.getNum());
-            incomodity.setPrice(commodity.getPrice());
-            incomodity.setTime(new Date());
-            incomodity.setIn_order_id(inOrder.getId());
-            DataModel.insertInCommodityOrder(incomodity);
-            DataModel.addCommodity(commodity);
+            OutCommodityOrder outCommodityOrder = new OutCommodityOrder();
+            outCommodityOrder.setCommodity(commodity);
+            outCommodityOrder.setCommodity_id(commodity.getId());
+            outCommodityOrder.setNum(commodity.getNum());
+            outCommodityOrder.setTime(new Date());
+            outCommodityOrder.setOut_order_id(outOrder.getId());
+            DataModel.insertOutCommodityOrder(outCommodityOrder);
+            DataModel.sellCommodity(commodity);
         }
-        if (commodities.size()==0){
-            DataModel.removeInOrder(inOrder.getId());
+        if (commodities.size() == 0) {
+            DataModel.removeInOrder(outOrder.getId());
         }
         finish();
+    }
+
+    private void edit() {
+        DialogUtil.showEditWindows(this, new DialogUtil.OnSubmit() {
+            @Override
+            public void submit(String str) {
+                upData(str);
+            }
+        }, null, "请输入条形码", "手动输入", "确定", "取消", false, getCurrentFocus());
     }
 
     @Override
@@ -320,9 +358,10 @@ public final class InCommodityActivity extends BaseActivity implements SurfaceHo
                 @Override
                 public void onSuccess(Commodity commodity) {
                     commodity.setNum(1);
-                    commodity.setPrice(DataModel.lastInCommodityOrder()==null?0:DataModel.lastInCommodityOrder().getPrice());
+                    commodity.setPrice(DataModel.lastInCommodityOrder() == null ? 0 : DataModel.lastInCommodityOrder().getPrice());
                     commodities.add(commodity);
                     adapter.updateData(commodities);
+                    refreshPrice();
                 }
 
                 @Override
@@ -330,6 +369,7 @@ public final class InCommodityActivity extends BaseActivity implements SurfaceHo
                     startNewCommodity(barCode);
                 }
             });
+        refreshPrice();
     }
 
     boolean add(String barCode) {
@@ -346,6 +386,15 @@ public final class InCommodityActivity extends BaseActivity implements SurfaceHo
 
     private static final int CODE_ADD = 1;
 
+    private void refreshPrice() {
+        float count = 0f;
+        for (Commodity co :
+                commodities) {
+            count += co.getPrice() * co.getNum();
+        }
+        tv_price.setText(StringFormatUtil.formatMoney(count));
+    }
+
     private void startNewCommodity(String bar_code) {
         startActivityForResult(NewCommodityActivity.add(this, bar_code), CODE_ADD);
     }
@@ -355,6 +404,9 @@ public final class InCommodityActivity extends BaseActivity implements SurfaceHo
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == RESULT_OK && requestCode == CODE_ADD) {
             upData(((Commodity) data.getParcelableExtra("data")).getBar_code());
+        }else if (resultCode == RESULT_OK&& requestCode == CODE_PAY){
+            ToastUtil.showDefaultShortToast(this,"支付成功");
+            sell(model);
         }
     }
 

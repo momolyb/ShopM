@@ -1,5 +1,6 @@
 package com.tim.shopm;
 
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
@@ -12,8 +13,10 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.tim.common.PermissionsUtils;
+import com.tim.shopm.activity.SellCommodityActivity;
 import com.tim.shopm.adapter.MyPagerAdapter;
 import com.tim.shopm.fragment.ProductManagerFragment;
+import com.tim.shopm.fragment.TestFragment;
 
 import java.util.ArrayList;
 
@@ -23,6 +26,7 @@ public class MainActivity extends AppCompatActivity {
     private TabLayout tl_content_indicator;
     private ArrayList<Fragment> fragmentList;
     private ArrayList<String> list_Title;
+    private int selected = 0;
 
     {
         fragmentList = new ArrayList<>();
@@ -61,7 +65,16 @@ public class MainActivity extends AppCompatActivity {
         tl_content_indicator.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(Tab tab) {
-                vp_content.setCurrentItem(tab.getPosition());
+                switch (tab.getPosition()) {
+                    case 1:
+                        startSellActivity();
+                        tl_content_indicator.getTabAt(selected).select();
+                        break;
+                    default:
+                        selected = tab.getPosition();
+                        vp_content.setCurrentItem(tab.getPosition());
+                        break;
+                }
             }
 
             @Override
@@ -74,5 +87,10 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
+    }
+
+    private void startSellActivity() {
+        Intent intent = new Intent(this, SellCommodityActivity.class);
+        startActivity(intent);
     }
 }

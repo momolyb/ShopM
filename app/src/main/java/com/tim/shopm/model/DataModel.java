@@ -3,6 +3,8 @@ package com.tim.shopm.model;
 import com.tim.shopm.entity.Commodity;
 import com.tim.shopm.entity.InCommodityOrder;
 import com.tim.shopm.entity.InOrder;
+import com.tim.shopm.entity.OutCommodityOrder;
+import com.tim.shopm.entity.OutOrder;
 import com.tim.shopm.manager.DatabaseManager;
 
 import java.util.ArrayList;
@@ -52,8 +54,14 @@ public class DataModel {
     public static void insertInCommodityOrder(InCommodityOrder entity){
         DatabaseManager.getDaoSession().getInCommodityOrderDao().insert(entity);
     }
+    public static void insertOutCommodityOrder(OutCommodityOrder entity){
+        DatabaseManager.getDaoSession().getOutCommodityOrderDao().insert(entity);
+    }
     public static void insertInOrder(InOrder entity){
        DatabaseManager.getDaoSession().getInOrderDao().insert(entity);
+    }
+    public static void insertOutOrder(OutOrder entity){
+        DatabaseManager.getDaoSession().getOutOrderDao().insert(entity);
     }
     public static void removeCommodity(long id){
         DatabaseManager.getDaoSession().getCommodityDao().deleteByKey(id);
@@ -66,6 +74,12 @@ public class DataModel {
     }
     public static void updateCommodity(Commodity entity){
         DatabaseManager.getDaoSession().getCommodityDao().update(entity);
+    }
+    public static void sellCommodity(Commodity entity){
+        DatabaseManager.getDaoSession().clear();
+        Commodity temp = DatabaseManager.getDaoSession().getCommodityDao().load(entity.getId());
+        temp.setNum(temp.getNum()-entity.getNum());
+        updateCommodity(temp);
     }
     public static void findCommodity(String barcode,LoadDataCallBack<Commodity> callBack) {
         DatabaseManager.getDaoSession().clear();

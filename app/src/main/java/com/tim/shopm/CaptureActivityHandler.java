@@ -28,6 +28,7 @@ import com.google.zxing.client.android.Intents;
 import com.google.zxing.client.android.ViewfinderResultPointCallback;
 import com.google.zxing.client.android.camera.CameraManager;
 import com.tim.shopm.activity.InCommodityActivity;
+import com.tim.shopm.base.CaptureActivity;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -50,7 +51,7 @@ public final class CaptureActivityHandler extends Handler {
 
   private static final String TAG = CaptureActivityHandler.class.getSimpleName();
 
-  private final InCommodityActivity activity;
+  private final CaptureActivity activity;
   private final DecodeThread decodeThread;
   private State state;
   private final CameraManager cameraManager;
@@ -61,7 +62,7 @@ public final class CaptureActivityHandler extends Handler {
     DONE
   }
 
-  public CaptureActivityHandler(InCommodityActivity activity,
+  public CaptureActivityHandler(CaptureActivity activity,
                                 Collection<BarcodeFormat> decodeFormats,
                                 Map<DecodeHintType, ?> baseHints,
                                 String characterSet,
