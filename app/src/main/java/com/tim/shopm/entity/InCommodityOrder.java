@@ -12,7 +12,7 @@ import org.greenrobot.greendao.DaoException;
 import com.tim.shopm.greendao.DaoSession;
 import com.tim.shopm.greendao.CommodityDao;
 import com.tim.shopm.greendao.InCommodityOrderDao;
-
+//进货表
 @Entity(active = true)
 public class InCommodityOrder {
     @Id(autoincrement = true)

@@ -11,6 +11,8 @@ import android.widget.TextView;
 
 import com.tim.shopm.R;
 
+import org.w3c.dom.Text;
+
 public abstract class BaseFragment extends Fragment {
     private TitleViewHolder viewHolder;
 
@@ -26,19 +28,14 @@ public abstract class BaseFragment extends Fragment {
         getActivity().setTitle(getPageTitle());
     }
 
-    public void enableRightButton(@DrawableRes int btnIcon,View.OnClickListener click) {
+    public void enableRightButton(String btnIcon,View.OnClickListener click) {
         viewHolder.mBtnRight.setVisibility(View.VISIBLE);
-        viewHolder.mBtnRight.setImageResource(btnIcon);
+        viewHolder.mBtnRight.setText(btnIcon);
         viewHolder.mBtnRight.setOnClickListener(click);
     }
-    public void enableRight2Button(@DrawableRes int btnIcon,View.OnClickListener click) {
-        viewHolder.mBtnRight.setVisibility(View.VISIBLE);
-        viewHolder.mBtnRight.setImageResource(btnIcon);
-        viewHolder.mBtnRight.setOnClickListener(click);
-    }
-    public void enableLeftButton(@DrawableRes int btnIcon,View.OnClickListener click) {
+    public void enableLeftButton(String btnIcon,View.OnClickListener click) {
         viewHolder.mBtnLeft.setVisibility(View.VISIBLE);
-        viewHolder.mBtnLeft.setImageResource(btnIcon);
+        viewHolder.mBtnLeft.setText(btnIcon);
         viewHolder.mBtnLeft.setOnClickListener(click);
     }
 
@@ -47,8 +44,8 @@ public abstract class BaseFragment extends Fragment {
     public static class TitleViewHolder {
         public View rootView;
         public TextView mTitle;
-        public ImageButton mBtnLeft;
-        public ImageButton mBtnRight;
+        public TextView mBtnLeft;
+        public TextView mBtnRight;
 
         public TitleViewHolder(View rootView) {
             this.rootView = rootView;

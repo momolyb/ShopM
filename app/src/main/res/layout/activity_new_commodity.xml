@@ -2,6 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#EEEEEE"
     android:orientation="vertical">
 
     <include layout="@layout/layout_title" />
@@ -9,113 +10,141 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:layout_marginTop="7dp"
+        android:background="@mipmap/bg_big"
+        android:orientation="vertical"
+        android:paddingLeft="15dp"
+        android:paddingRight="15dp"
+        android:paddingBottom="40dp">
 
-        <TextView
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="3"
-            android:gravity="center_vertical"
-            android:paddingLeft="20dp"
-            android:text="商品名称" />
+            android:orientation="horizontal">
 
-        <EditText
-            android:id="@+id/et_name"
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="3"
+                android:gravity="center_vertical"
+                android:paddingLeft="20dp"
+                android:text="商品名称" />
+
+            <EditText
+                android:id="@+id/et_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:hint="请输入商品名称" />
+        </LinearLayout>
+
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:hint="请输入商品名称" />
-    </LinearLayout>
+            android:orientation="horizontal">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="3"
+                android:gravity="center_vertical"
+                android:paddingLeft="20dp"
+                android:text="条形码" />
 
-        <TextView
+            <EditText
+                android:id="@+id/et_bar_code"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:hint="请输入商品条码" />
+        </LinearLayout>
+
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="3"
-            android:gravity="center_vertical"
-            android:paddingLeft="20dp"
-            android:text="条形码" />
+            android:orientation="horizontal">
 
-        <EditText
-            android:id="@+id/et_bar_code"
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="3"
+                android:gravity="center_vertical"
+                android:paddingLeft="20dp"
+                android:text="单价" />
+
+            <EditText
+                android:id="@+id/et_price"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:hint="0.00" />
+        </LinearLayout>
+
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:hint="请输入商品条码" />
-    </LinearLayout>
+            android:orientation="horizontal">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="3"
+                android:gravity="center_vertical"
+                android:paddingLeft="20dp"
+                android:text="数量" />
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="3"
-            android:gravity="center_vertical"
-            android:paddingLeft="20dp"
-            android:text="单价" />
+            <TextView
+                android:id="@+id/tv_num"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="right|center_vertical"
+                android:paddingRight="20dp" />
+        </LinearLayout>
 
-        <EditText
-            android:id="@+id/et_price"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:hint="0.00" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="3"
-            android:gravity="center_vertical"
-            android:paddingLeft="20dp"
-            android:text="数量" />
-
-        <TextView
-            android:id="@+id/tv_num"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="right|center_vertical"
-            android:paddingRight="20dp" />
-    </LinearLayout>
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="bottom"
-        android:layout_weight="1"
-        android:orientation="horizontal">
-        <TextView
-            android:id="@+id/btn_del"
-            android:text="删除"
+        <LinearLayout
             android:layout_width="wrap_content"
-            android:gravity="center"
+            android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:layout_height="wrap_content" />
-        <TextView
-            android:id="@+id/btn_save"
-            android:text="保存"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
-        <TextView
-            android:id="@+id/btn_create"
-            android:text="创建"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:gravity="bottom"
+            android:layout_gravity="center"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/btn_del"
+                android:text="删除"
+                android:layout_width="100dp"
+                android:layout_height="30dp"
+                android:background="@drawable/bg_del"
+                android:gravity="center"
+                android:textColor="@android:color/white"
+                android:textSize="16dp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/btn_save"
+                android:layout_width="100dp"
+                android:layout_height="30dp"
+                android:background="@drawable/bg_save"
+                android:gravity="center"
+                android:layout_marginLeft="25dp"
+                android:textColor="@android:color/white"
+                android:textSize="16dp"
+                android:textStyle="bold"
+                android:text="保存" />
+
+            <TextView
+                android:id="@+id/btn_create"
+                android:layout_width="100dp"
+                android:layout_height="30dp"
+                android:background="@drawable/bg_save"
+                android:gravity="center"
+                android:layout_marginLeft="25dp"
+                android:visibility="gone"
+                android:textColor="@android:color/white"
+                android:textSize="16dp"
+                android:textStyle="bold"
+                android:text="创建" />
+        </LinearLayout>
     </LinearLayout>
 </LinearLayout>

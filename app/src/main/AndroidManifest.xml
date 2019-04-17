@@ -27,6 +27,11 @@
         <activity android:name=".activity.SellCommodityActivity" />
         <activity android:name=".activity.SettingActivity" />
         <activity android:name=".activity.PayActivity" />
+        <activity android:name=".activity.OtherOutActivity" />
+        <activity android:name=".activity.InOrderInfoActivity" />
+        <activity android:name=".activity.OutOrderInfoActivity" />
+        <activity android:name=".activity.InventoryCommodityActivity" />
+
         <provider android:name="android.support.v4.content.FileProvider"
 
             android:authorities="com.tim.fileprovider"

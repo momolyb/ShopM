@@ -38,7 +38,7 @@ public class ProductManagerFragment extends BaseFragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        enableRightButton(R.mipmap.add,view1 -> onRightClick());
+        enableRightButton("进货",view1 -> onRightClick());
         rv_content = view.findViewById(R.id.rv_content);
         rv_content.setLayoutManager(new LinearLayoutManager(getContext()));
         adapter = SlimAdapter.create(SlimAdapterEx.class).register(R.layout.item_product, new SlimInjector<Commodity>() {

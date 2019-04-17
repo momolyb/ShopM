@@ -113,8 +113,8 @@ public final class InCommodityActivity extends CaptureActivity implements Surfac
         Window window = getWindow();
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         setContentView(R.layout.activity_in_commodity);
-        enableLeftButton(R.mipmap.ic_launcher, view -> onBackPressed());
-        enableRightButton(R.mipmap.ic_launcher, view -> submit());
+        enableLeftButton("返回", view -> onBackPressed());
+        enableRightButton("完成", view -> submit());
         hasSurface = false;
         inactivityTimer = new InactivityTimer(this);
         beepManager = new BeepManager(this);

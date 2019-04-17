@@ -124,8 +124,8 @@ public final class SellCommodityActivity extends CaptureActivity implements Surf
         Window window = getWindow();
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         setContentView(R.layout.activity_out_commodity);
-        enableLeftButton(R.mipmap.ic_launcher, view -> onBackPressed());
-        enableRightButton(R.mipmap.ic_launcher, view -> edit());
+        enableLeftButton("返回", view -> onBackPressed());
+        enableRightButton("手动录入", view -> edit());
         hasSurface = false;
         inactivityTimer = new InactivityTimer(this);
         beepManager = new BeepManager(this);
@@ -213,6 +213,7 @@ public final class SellCommodityActivity extends CaptureActivity implements Surf
             outCommodityOrder.setCommodity(commodity);
             outCommodityOrder.setCommodity_id(commodity.getId());
             outCommodityOrder.setNum(commodity.getNum());
+            outCommodityOrder.setPrice(commodity.getPrice());
             outCommodityOrder.setTime(new Date());
             outCommodityOrder.setOut_order_id(outOrder.getId());
             DataModel.insertOutCommodityOrder(outCommodityOrder);
@@ -358,7 +359,6 @@ public final class SellCommodityActivity extends CaptureActivity implements Surf
                 @Override
                 public void onSuccess(Commodity commodity) {
                     commodity.setNum(1);
-                    commodity.setPrice(DataModel.lastInCommodityOrder() == null ? 0 : DataModel.lastInCommodityOrder().getPrice());
                     commodities.add(commodity);
                     adapter.updateData(commodities);
                     refreshPrice();
@@ -462,6 +462,6 @@ public final class SellCommodityActivity extends CaptureActivity implements Surf
 
     @Override
     protected String getPageTitle() {
-        return "进货";
+        return "卖货";
     }
 }

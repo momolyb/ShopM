@@ -24,15 +24,15 @@ public abstract class BaseActivity extends AppCompatActivity {
         initTitle();
     }
 
-    public void enableRightButton(@DrawableRes int btnIcon,View.OnClickListener click) {
+    public void enableRightButton(String str,View.OnClickListener click) {
         viewHolder.mBtnRight.setVisibility(View.VISIBLE);
-        viewHolder.mBtnRight.setImageResource(btnIcon);
+        viewHolder.mBtnRight.setText(str);
         viewHolder.mBtnRight.setOnClickListener(click);
     }
 
-    public void enableLeftButton(@DrawableRes int btnIcon,View.OnClickListener click) {
+    public void enableLeftButton(String btnIcon,View.OnClickListener click) {
         viewHolder.mBtnLeft.setVisibility(View.VISIBLE);
-        viewHolder.mBtnLeft.setImageResource(btnIcon);
+        viewHolder.mBtnLeft.setText(btnIcon);
         viewHolder.mBtnLeft.setOnClickListener(click);
     }
 
@@ -40,8 +40,8 @@ public abstract class BaseActivity extends AppCompatActivity {
 
     public class TitleViewHolder {
         public TextView mTitle;
-        public ImageButton mBtnLeft;
-        public ImageButton mBtnRight;
+        public TextView mBtnLeft;
+        public TextView mBtnRight;
 
         public TitleViewHolder() {
             this.mTitle = findViewById(R.id.title);

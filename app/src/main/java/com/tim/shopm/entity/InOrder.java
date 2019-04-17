@@ -6,14 +6,17 @@ import org.greenrobot.greendao.annotation.Keep;
 import org.greenrobot.greendao.annotation.NotNull;
 import org.greenrobot.greendao.annotation.ToMany;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+
 import org.greenrobot.greendao.annotation.Generated;
 import org.greenrobot.greendao.DaoException;
+
 import com.tim.shopm.greendao.DaoSession;
 import com.tim.shopm.greendao.InCommodityOrderDao;
 import com.tim.shopm.greendao.InOrderDao;
-
+//进货订单
 @Entity(active = true)
 public class InOrder {
     @Id(autoincrement = true)
@@ -23,12 +26,17 @@ public class InOrder {
 
     @ToMany(referencedJoinProperty = "in_order_id")
     private List<InCommodityOrder> inCommodityOrders;
-    /** Used to resolve relations */
+    /**
+     * Used to resolve relations
+     */
     @Generated(hash = 2040040024)
     private transient DaoSession daoSession;
-    /** Used for active entity operations. */
+    /**
+     * Used for active entity operations.
+     */
     @Generated(hash = 1362542278)
     private transient InOrderDao myDao;
+
     public InOrder() {
     }
 
@@ -39,6 +47,15 @@ public class InOrder {
         this.time = time;
     }
 
+    public float getMoneyCount() {
+        float count = 0;
+        List<InCommodityOrder> t = getInCommodityOrders();
+        for (InCommodityOrder in :
+                t) {
+            count += in.getPrice() * in.getNum();
+        }
+        return count;
+    }
 
     public Date getTime() {
         return time;
@@ -81,7 +98,9 @@ public class InOrder {
     }
 
 
-    /** Resets a to-many relationship, making the next get call to query for a fresh result. */
+    /**
+     * Resets a to-many relationship, making the next get call to query for a fresh result.
+     */
     @Generated(hash = 760465908)
     public synchronized void resetInCommodityOrders() {
         inCommodityOrders = null;
@@ -127,7 +146,9 @@ public class InOrder {
     }
 
 
-    /** called by internal mechanisms, do not call yourself. */
+    /**
+     * called by internal mechanisms, do not call yourself.
+     */
     @Generated(hash = 924774995)
     public void __setDaoSession(DaoSession daoSession) {
         this.daoSession = daoSession;

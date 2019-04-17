@@ -12,7 +12,7 @@ import org.greenrobot.greendao.DaoException;
 import com.tim.shopm.greendao.DaoSession;
 import com.tim.shopm.greendao.CommodityDao;
 import com.tim.shopm.greendao.InventoryCommodityDao;
-
+//盘点商品
 @Entity(active = true)
 public class InventoryCommodity  {
     @Id(autoincrement = true)
@@ -21,6 +21,8 @@ public class InventoryCommodity  {
     private String bar_code;
     @NotNull
     private int num;
+    @NotNull
+    private int stnum;
     @NotNull
     private Long inventory_id;
     private Long commodity_id;
@@ -46,12 +48,13 @@ public class InventoryCommodity  {
     public InventoryCommodity() {
     }
 
-    @Generated(hash = 156012476)
-    public InventoryCommodity(Long id, @NotNull String bar_code, int num,
+    @Generated(hash = 1105254944)
+    public InventoryCommodity(Long id, @NotNull String bar_code, int num, int stnum,
             @NotNull Long inventory_id, Long commodity_id) {
         this.id = id;
         this.bar_code = bar_code;
         this.num = num;
+        this.stnum = stnum;
         this.inventory_id = inventory_id;
         this.commodity_id = commodity_id;
     }
@@ -158,5 +161,13 @@ public class InventoryCommodity  {
             commodity_id = commodity == null ? null : commodity.getId();
             commodity__resolvedKey = commodity_id;
         }
+    }
+
+    public int getStnum() {
+        return stnum;
+    }
+
+    public void setStnum(int stnum) {
+        this.stnum = stnum;
     }
 }

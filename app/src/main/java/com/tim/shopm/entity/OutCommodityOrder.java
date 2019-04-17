@@ -12,7 +12,7 @@ import org.greenrobot.greendao.DaoException;
 import com.tim.shopm.greendao.DaoSession;
 import com.tim.shopm.greendao.CommodityDao;
 import com.tim.shopm.greendao.OutCommodityOrderDao;
-
+//销售记录
 @Entity(active = true)
 public class OutCommodityOrder   {
     @Id(autoincrement = true)
@@ -23,6 +23,8 @@ public class OutCommodityOrder   {
     private int num;
     @NotNull
     private Long out_order_id;
+    @NotNull
+    private float price;
     private Long commodity_id;
     @ToOne(joinProperty = "commodity_id")
     private Commodity commodity;
@@ -38,13 +40,14 @@ public class OutCommodityOrder   {
     public OutCommodityOrder() {
     }
 
-    @Generated(hash = 1507052281)
+    @Generated(hash = 1904714430)
     public OutCommodityOrder(Long id, @NotNull Date time, int num, @NotNull Long out_order_id,
-            Long commodity_id) {
+            float price, Long commodity_id) {
         this.id = id;
         this.time = time;
         this.num = num;
         this.out_order_id = out_order_id;
+        this.price = price;
         this.commodity_id = commodity_id;
     }
 
@@ -158,5 +161,13 @@ public class OutCommodityOrder   {
             commodity_id = commodity == null ? null : commodity.getId();
             commodity__resolvedKey = commodity_id;
         }
+    }
+
+    public float getPrice() {
+        return price;
+    }
+
+    public void setPrice(float price) {
+        this.price = price;
     }
 }

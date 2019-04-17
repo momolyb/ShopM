@@ -9,7 +9,7 @@ import org.greenrobot.greendao.annotation.Generated;
 import org.greenrobot.greendao.DaoException;
 import com.tim.shopm.greendao.DaoSession;
 import com.tim.shopm.greendao.OtherAccountDao;
-
+//其他
 @Entity(active = true)
 public class OtherAccount  {
 

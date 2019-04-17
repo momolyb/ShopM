@@ -13,7 +13,7 @@ import org.greenrobot.greendao.DaoException;
 import com.tim.shopm.greendao.DaoSession;
 import com.tim.shopm.greendao.OutOrderDao;
 import com.tim.shopm.greendao.OutCommodityOrderDao;
-
+//销售订单
 @Entity(active = true)
 public class OutOrder   {
     public static final int TYPE_ALI = 1;
@@ -44,19 +44,18 @@ public class OutOrder   {
         this.time = time;
         this.pay_type = pay_type;
     }
-
-    public static int getTypeAli() {
-        return TYPE_ALI;
+    public String getPayType(){
+        switch (getPay_type()){
+            case TYPE_ALI:
+                return "支付宝";
+            case TYPE_WX:
+                return "微信";
+            case TYPE_CASH:
+                return "现金";
+            default:
+                return "未知";
+        }
     }
-
-    public static int getTypeWx() {
-        return TYPE_WX;
-    }
-
-    public static int getTypeCash() {
-        return TYPE_CASH;
-    }
-
     public Date getTime() {
         return time;
     }
@@ -78,7 +77,15 @@ public class OutOrder   {
     public void setId(Long id) {
         this.id = id;
     }
-
+    public float getMoneyCount() {
+        float count = 0;
+        List<OutCommodityOrder> t = getOutCommodityOrders();
+        for (OutCommodityOrder in :
+                t) {
+            count += in.getPrice() * in.getNum();
+        }
+        return count;
+    }
     /**
      * To-many relationship, resolved on first access (and after reset).
      * Changes to to-many relations are not persisted, make changes to the target entity.

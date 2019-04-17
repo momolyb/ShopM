@@ -45,7 +45,7 @@ public class SettingActivity extends BaseActivity {
         setContentView(R.layout.activity_setting);
         initView();
         SharedPreferencesUtil.initSetting(this);
-        enableLeftButton(R.drawable.ic_launcher_foreground, view -> onBackPressed());
+        enableLeftButton("返回", view -> onBackPressed());
         initDate();
     }
 

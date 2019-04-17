@@ -8,35 +8,48 @@ import org.greenrobot.greendao.annotation.ToMany;
 
 import java.util.Date;
 import java.util.List;
+
 import org.greenrobot.greendao.annotation.Generated;
 import org.greenrobot.greendao.DaoException;
+
 import com.tim.shopm.greendao.DaoSession;
 import com.tim.shopm.greendao.InventoryCommodityDao;
 import com.tim.shopm.greendao.InventoryDao;
 
+//盘点订单
 @Entity(active = true)
-public class Inventory{
+public class Inventory {
+    public static final int ing = 0;
+    public static final int stop = 1;
     @Id(autoincrement = true)
     public Long id;
     @NotNull
     private String context;
     @NotNull
+    private int state;
+    @NotNull
     private Date time;
     @ToMany(referencedJoinProperty = "inventory_id")
     private List<InventoryCommodity> inventoryCommodities;
-    /** Used to resolve relations */
+    /**
+     * Used to resolve relations
+     */
     @Generated(hash = 2040040024)
     private transient DaoSession daoSession;
-    /** Used for active entity operations. */
+    /**
+     * Used for active entity operations.
+     */
     @Generated(hash = 433391049)
     private transient InventoryDao myDao;
+
     public Inventory() {
     }
 
-    @Generated(hash = 410279893)
-    public Inventory(Long id, @NotNull String context, @NotNull Date time) {
+    @Generated(hash = 1899948786)
+    public Inventory(Long id, @NotNull String context, int state, @NotNull Date time) {
         this.id = id;
         this.context = context;
+        this.state = state;
         this.time = time;
     }
 
@@ -64,7 +77,9 @@ public class Inventory{
         this.id = id;
     }
 
-    /** Resets a to-many relationship, making the next get call to query for a fresh result. */
+    /**
+     * Resets a to-many relationship, making the next get call to query for a fresh result.
+     */
     @Generated(hash = 1369570626)
     public synchronized void resetInventoryCommodities() {
         inventoryCommodities = null;
@@ -106,7 +121,9 @@ public class Inventory{
         myDao.update(this);
     }
 
-    /** called by internal mechanisms, do not call yourself. */
+    /**
+     * called by internal mechanisms, do not call yourself.
+     */
     @Generated(hash = 1763418221)
     public void __setDaoSession(DaoSession daoSession) {
         this.daoSession = daoSession;
@@ -134,5 +151,13 @@ public class Inventory{
             }
         }
         return inventoryCommodities;
+    }
+
+    public int getState() {
+        return state;
+    }
+
+    public void setState(int state) {
+        this.state = state;
     }
 }

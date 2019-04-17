@@ -2,22 +2,38 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
     android:padding="10dp"
-    android:background="#f99"
     android:layout_height="wrap_content">
-    <TextView
-        android:id="@+id/tv_time"
+
+    <LinearLayout
         android:layout_width="match_parent"
-        android:text="sadfsadf"
-        android:layout_height="wrap_content" />
+        android:layout_height="match_parent"
+        android:layout_marginTop="15dp"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/tv_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="right"
+            android:text="sadfsadf" />
+
+        <TextView
+            android:id="@+id/tv_num"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="right"
+            android:text="sadfsadf" />
+
+    </LinearLayout>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_marginTop="15dp"
         android:orientation="horizontal"
         android:layout_height="wrap_content">
         <TextView
-            android:id="@+id/tv_pay_model"
+            android:id="@+id/tv_price"
             android:layout_width="wrap_content"
-            android:text="sadfsadf"
             android:gravity="right"
             android:layout_height="wrap_content" />
 

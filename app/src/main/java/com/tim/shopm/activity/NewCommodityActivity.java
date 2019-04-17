@@ -142,8 +142,13 @@ public class NewCommodityActivity extends BaseActivity {
 
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                if (!TextUtils.isEmpty(charSequence))
-                commodity.setPrice(Float.parseFloat(charSequence.toString()));
+                try{
+                    if (!TextUtils.isEmpty(charSequence))
+                        commodity.setPrice(Float.parseFloat(charSequence.toString()));
+                }catch (Exception e){
+                    mEtPrice.setText("");
+                }
+
             }
 
             @Override

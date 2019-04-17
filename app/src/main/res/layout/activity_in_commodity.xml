@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+    android:background="#EEEEEE"
     android:layout_height="match_parent">
 
     <SurfaceView android:id="@+id/preview_view"
@@ -16,6 +17,7 @@
         <com.google.zxing.client.android.ViewfinderView
             android:id="@+id/viewfinder_view"
             style="@style/preview_size"/>
+        <include layout="@layout/view_in_c" />
       <android.support.v7.widget.RecyclerView
           android:id="@+id/rv_content"
           android:layout_width="match_parent"

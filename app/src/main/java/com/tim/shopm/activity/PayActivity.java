@@ -36,8 +36,8 @@ public class PayActivity extends BaseActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pay);
-        enableLeftButton(R.drawable.ic_launcher_foreground, view -> onBackPressed());
-        enableRightButton(R.drawable.ic_launcher_foreground, view -> pay());
+        enableLeftButton("返回", view -> onBackPressed());
+        enableRightButton("确认", view -> pay());
         model = getIntent().getIntExtra("mode", 0);
         init();
     }

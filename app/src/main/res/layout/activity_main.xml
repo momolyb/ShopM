@@ -1,27 +1,48 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
-    tools:context=".MainActivity">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:background="#EEEEEE"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
-    <com.tim.shopm.NoScrollViewPager
-        android:id="@+id/vp_content"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1">
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        tools:context=".MainActivity">
 
-    </com.tim.shopm.NoScrollViewPager>
-    <View
-        android:background="@color/colorPrimary"
-        android:layout_width="match_parent"
-        android:layout_height="0.5dp"/>
-    <android.support.design.widget.TabLayout
-        android:id="@+id/tl_content_indicator"
-        android:layout_width="match_parent"
-        app:tabGravity="fill"
-        android:layout_gravity = "bottom"
-        android:layout_height="wrap_content" />
-</LinearLayout>
+        <com.tim.shopm.NoScrollViewPager
+            android:id="@+id/vp_content"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1">
+
+        </com.tim.shopm.NoScrollViewPager>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:background="@color/colorPrimary" />
+
+        <android.support.design.widget.TabLayout
+            android:id="@+id/tl_content_indicator"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@android:color/white"
+            android:layout_gravity="bottom"
+            app:tabGravity="fill" />
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/btn_sell"
+        android:layout_width="43dp"
+        android:layout_height="43dp"
+        android:layout_marginBottom="100dp"
+        android:layout_marginRight="30dp"
+        android:background="@drawable/bg_sell_btn"
+        android:gravity="center"
+        android:layout_gravity="bottom|right"
+        android:text="卖"
+        android:textColor="@android:color/white" />
+</FrameLayout>

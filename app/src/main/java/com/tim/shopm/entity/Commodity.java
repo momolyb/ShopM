@@ -10,7 +10,7 @@ import org.greenrobot.greendao.annotation.Generated;
 import org.greenrobot.greendao.DaoException;
 import com.tim.shopm.greendao.DaoSession;
 import com.tim.shopm.greendao.CommodityDao;
-
+//商品表
 @Entity(active = true)
 public class Commodity implements Parcelable {
     @Id(autoincrement = true)
