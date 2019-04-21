@@ -93,11 +93,15 @@ public final class InventoryCommodityActivity extends CaptureActivity implements
     private RecyclerView rv_content;
     private SlimAdapter adapter;
     private EditText et_title;
-
+    private long id;
     public static void start(Context context) {
         context.startActivity(new Intent(context,InventoryCommodityActivity.class));
     }
-
+    public static void start(Context context,long id) {
+        Intent intent = new Intent(context,InventoryCommodityActivity.class);
+        intent.putExtra("id",id);
+        context.startActivity(intent);
+    }
     public ViewfinderView getViewfinderView() {
         return viewfinderView;
     }
@@ -113,7 +117,7 @@ public final class InventoryCommodityActivity extends CaptureActivity implements
     @Override
     public void onCreate(Bundle icicle) {
         super.onCreate(icicle);
-
+        id = getIntent().getLongExtra("id",-1);
         Window window = getWindow();
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         setContentView(R.layout.activity_inventory_commodity);
@@ -164,26 +168,29 @@ public final class InventoryCommodityActivity extends CaptureActivity implements
             }
         }).attachTo(rv_content).updateData(commodities);
         PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
+        initData();
     }
-
+    private Inventory inventory;
     void close() {
-        Inventory inventory = new Inventory();
-        inventory.setTime(new Date());
-        inventory.setState(Inventory.ing);
-        inventory.setContext(et_title.getText().toString());
-        DataModel.insertInventory(inventory);
-        for (Iterator<InventoryCommodity> it = commodities.iterator(); it.hasNext(); ) {
-            InventoryCommodity commodity = it.next();
-            if (commodity.getNum() <= 0) {
-                it.remove();
-                continue;
-            }
-            commodity.setInventory_id(inventory.getId());
-            DataModel.insertInventoryCommodityOrder(commodity);
-        }
-        if (commodities.size() == 0) {
-            DataModel.removeInOrder(inventory.getId());
-        }
+       if (id==-1){
+           Inventory inventory = new Inventory();
+           inventory.setTime(new Date());
+           inventory.setState(Inventory.ing);
+           inventory.setContext(et_title.getText().toString());
+           DataModel.insertInventory(inventory);
+           for (Iterator<InventoryCommodity> it = commodities.iterator(); it.hasNext(); ) {
+               InventoryCommodity commodity = it.next();
+               commodity.setInventory_id(inventory.getId());
+               DataModel.insertInventoryCommodityOrder(commodity);
+           }
+       }else {
+           inventory.setTime(new Date());
+           for (InventoryCommodity co :
+                   inventory.getInventoryCommodities()) {
+               co.update();
+           }
+           inventory.update();
+       }
         finish();
     }
 
@@ -201,7 +208,39 @@ public final class InventoryCommodityActivity extends CaptureActivity implements
         super.onResume();
         init();
     }
+    void initData(){
+        commodities = new ArrayList<>();
+       if (id==-1){
+           DataModel.loadCommodities(new LoadDataCallBack<List<Commodity>>() {
+               @Override
+               public void onSuccess(List<Commodity> commodities) {
+                   for (Commodity com :
+                           commodities) {
+                       update1(com.getBar_code());
+                   }
+               }
 
+               @Override
+               public void onError(String msg, int code) {
+
+               }
+           });
+       }else {
+           DataModel.loadInventory(id, new LoadDataCallBack<Inventory>() {
+
+               @Override
+               public void onSuccess(Inventory inventory) {
+                   InventoryCommodityActivity.this.inventory = inventory;
+                    adapter.updateData(inventory.getInventoryCommodities());
+               }
+
+               @Override
+               public void onError(String msg, int code) {
+
+               }
+           });
+       }
+    }
     void init() {
 
         // historyManager must be initialized here to updateCommodity the history preference
@@ -336,7 +375,37 @@ public final class InventoryCommodityActivity extends CaptureActivity implements
                 }
             });
     }
+    void update1(String barCode){
+        if (!isIn(barCode))
+            DataModel.findCommodity(barCode, new LoadDataCallBack<Commodity>() {
+                @Override
+                public void onSuccess(Commodity commodity) {
+                    InventoryCommodity inventoryCommodity = new InventoryCommodity();
+                    inventoryCommodity.setBar_code(barCode);
+                    inventoryCommodity.setNum(0);
+                    inventoryCommodity.setStnum(commodity.getNum());
+                    inventoryCommodity.setCommodity(commodity);
+                    inventoryCommodity.setCommodity_id(commodity.getId());
+                    commodities.add(inventoryCommodity);
+                    adapter.updateData(commodities);
+                }
 
+                @Override
+                public void onError(String msg, int code) {
+                    startNewCommodity(barCode);
+                }
+            });
+    }
+    boolean isIn(String barCode) {
+        for (InventoryCommodity item :
+                commodities) {
+            if (item.getBar_code().equals(barCode)) {
+                adapter.updateData(commodities);
+                return true;
+            }
+        }
+        return false;
+    }
     boolean add(String barCode) {
         for (InventoryCommodity item :
                 commodities) {

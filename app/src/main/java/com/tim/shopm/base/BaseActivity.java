@@ -29,7 +29,11 @@ public abstract class BaseActivity extends AppCompatActivity {
         viewHolder.mBtnRight.setText(str);
         viewHolder.mBtnRight.setOnClickListener(click);
     }
-
+    public void enableRight2Button(String str,View.OnClickListener click) {
+        viewHolder.mBtnRight2.setVisibility(View.VISIBLE);
+        viewHolder.mBtnRight2.setText(str);
+        viewHolder.mBtnRight2.setOnClickListener(click);
+    }
     public void enableLeftButton(String btnIcon,View.OnClickListener click) {
         viewHolder.mBtnLeft.setVisibility(View.VISIBLE);
         viewHolder.mBtnLeft.setText(btnIcon);
@@ -41,12 +45,13 @@ public abstract class BaseActivity extends AppCompatActivity {
     public class TitleViewHolder {
         public TextView mTitle;
         public TextView mBtnLeft;
-        public TextView mBtnRight;
+        public TextView mBtnRight,mBtnRight2;
 
         public TitleViewHolder() {
             this.mTitle = findViewById(R.id.title);
             this.mBtnLeft = findViewById(R.id.btn_left);
             this.mBtnRight = findViewById(R.id.btn_right);
+            this.mBtnRight2 = findViewById(R.id.btn_right2);
         }
 
     }

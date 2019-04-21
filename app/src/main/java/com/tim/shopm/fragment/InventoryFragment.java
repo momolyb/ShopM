@@ -14,14 +14,19 @@ import android.view.ViewGroup;
 
 import com.tim.shopm.R;
 import com.tim.shopm.activity.InventoryCommodityActivity;
+import com.tim.shopm.activity.InventoryInfoActivity;
 import com.tim.shopm.base.BaseFragment;
 import com.tim.shopm.entity.Inventory;
 import com.tim.shopm.entity.InventoryCommodity;
+import com.tim.shopm.model.DataModel;
+import com.tim.shopm.model.LoadDataCallBack;
 import com.tim.shopm.utils.StringFormatUtil;
 
 import net.idik.lib.slimadapter.SlimAdapter;
 import net.idik.lib.slimadapter.SlimInjector;
 import net.idik.lib.slimadapter.viewinjector.IViewInjector;
+
+import java.util.List;
 
 public class InventoryFragment extends BaseFragment {
     private RecyclerView rv_content;
@@ -52,11 +57,27 @@ public class InventoryFragment extends BaseFragment {
                         .clicked(R.id.item, new View.OnClickListener() {
                             @Override
                             public void onClick(View view) {
-
+                                InventoryInfoActivity.start(getContext(),inventory.getId());
                             }
                         });
             }
         }).attachTo(rv_content);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        DataModel.loadInventorys(new LoadDataCallBack<List<Inventory>>() {
+            @Override
+            public void onSuccess(List<Inventory> inventories) {
+                adapter.updateData(inventories);
+            }
+
+            @Override
+            public void onError(String msg, int code) {
+
+            }
+        });
     }
 
     private boolean inventoryResq(Inventory inventory) {

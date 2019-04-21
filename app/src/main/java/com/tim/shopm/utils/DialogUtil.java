@@ -17,7 +17,7 @@ import static com.tim.shopm.entity.OutOrder.TYPE_CASH;
 import static com.tim.shopm.entity.OutOrder.TYPE_WX;
 
 public class DialogUtil {
-    public static PopupWindow showAskWindows(Context context, View parent, String title, String msgStr, String buttonStr, String buttonStr2, boolean isOnebutton, View.OnClickListener onEnterClick, View.OnClickListener onCancleClick) {
+    public static PopupWindow showAskWindows(Context context, View parent, String title, String msgStr, String buttonEnter, String buttonCancle, boolean isOnebutton, View.OnClickListener onEnterClick, View.OnClickListener onCancleClick) {
         PopupWindow askWindows = new PopupWindow();
         View view = LayoutInflater.from(context).inflate(R.layout.ask_windows, null);
         view.findViewById(R.id.btn_e).setOnClickListener(v -> {
@@ -39,11 +39,11 @@ public class DialogUtil {
         if (!TextUtils.isEmpty(title)) {
             ((TextView) view.findViewById(R.id.tv_title)).setText(title);
         }
-        if (!TextUtils.isEmpty(buttonStr)) {
-            ((TextView) view.findViewById(R.id.btn_e)).setText(buttonStr);
+        if (!TextUtils.isEmpty(buttonEnter)) {
+            ((TextView) view.findViewById(R.id.btn_e)).setText(buttonEnter);
         }
-        if (!TextUtils.isEmpty(buttonStr2)) {
-            ((TextView) view.findViewById(R.id.btn_c)).setText(buttonStr2);
+        if (!TextUtils.isEmpty(buttonCancle)) {
+            ((TextView) view.findViewById(R.id.btn_c)).setText(buttonCancle);
         }
         view.findViewById(R.id.btn_c).setVisibility(isOnebutton ? View.GONE : View.VISIBLE);
         askWindows.setContentView(view);

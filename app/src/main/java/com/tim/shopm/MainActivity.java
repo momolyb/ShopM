@@ -8,14 +8,19 @@ import android.support.design.widget.TabLayout.Tab;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
+import android.text.TextUtils;
+import android.view.View;
 
 import com.tim.common.PermissionsUtils;
+import com.tim.common.ToastUtil;
 import com.tim.shopm.activity.SellCommodityActivity;
 import com.tim.shopm.adapter.MyPagerAdapter;
 import com.tim.shopm.fragment.InventoryFragment;
 import com.tim.shopm.fragment.ProductManagerFragment;
 import com.tim.shopm.fragment.SettingFragment;
 import com.tim.shopm.fragment.SummaryFragment;
+import com.tim.shopm.utils.DialogUtil;
+import com.tim.shopm.utils.SharedPreferencesUtil;
 
 import java.util.ArrayList;
 
@@ -26,6 +31,7 @@ public class MainActivity extends AppCompatActivity {
     private ArrayList<Fragment> fragmentList;
     private ArrayList<ItemTable> list_Title;
     private int selected = 0;
+    private boolean ischeck;
 
     public class ItemTable {
         public String title;
@@ -60,8 +66,33 @@ public class MainActivity extends AppCompatActivity {
         } catch (PackageManager.NameNotFoundException e) {
             e.printStackTrace();
         }
+
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+    }
+
+    private void checkpass(){
+        DialogUtil.showEditWindows(this, new DialogUtil.OnSubmit() {
+            @Override
+            public void submit(String str) {
+                if (SharedPreferencesUtil.get("pass").equals(str)) {
+                    ischeck = true;
+                } else {
+                    ToastUtil.showDefaultShortToast(MainActivity.this, "密码错误");
+                    checkpass();
+                }
+            }
+        }, new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
+            }
+        }, "请输入启动密码", "密码验证", "确认", "取消", false, findViewById(R.id.ll));
+    }
     private void initView() {
         vp_content = findViewById(R.id.vp_content);
         tl_content_indicator = findViewById(R.id.tl_content_indicator);
@@ -97,6 +128,14 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
+    }
+
+    @Override
+    public void onAttachedToWindow() {
+        super.onAttachedToWindow();
+        if (!ischeck&&!TextUtils.isEmpty(SharedPreferencesUtil.get("pass"))){
+            checkpass();
+        }
     }
 
     private void startSellActivity() {

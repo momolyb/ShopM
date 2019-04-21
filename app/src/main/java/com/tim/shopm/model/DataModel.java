@@ -37,7 +37,22 @@ public class DataModel {
     public static void removeInOrder(Long id) {
         DatabaseManager.getDaoSession().getInOrderDao().deleteByKey(id);
     }
-
+    public static void synchronousData(long id){
+        DatabaseManager.getDaoSession().clear();
+        Inventory inventorie = DatabaseManager.getDaoSession().getInventoryDao().load(id);
+        for (InventoryCommodity in :
+                inventorie.getInventoryCommodities()) {
+                updateCommodityNum(in.getCommodity_id(),in.getNum());
+        }
+        inventorie.setState(Inventory.stop);
+        inventorie.update();
+    }
+    private static void updateCommodityNum(long id,int num){
+        DatabaseManager.getDaoSession().clear();
+        Commodity commodity = DatabaseManager.getDaoSession().getCommodityDao().load(id);
+        commodity.setNum(num);
+        DatabaseManager.getDaoSession().getCommodityDao().update(commodity);
+    }
     public static float getInCount(Date start, Date end) {
         String sql = "select SUM("
                 + InCommodityOrderDao.Properties.Price.columnName
@@ -122,7 +137,16 @@ public class DataModel {
         List<Commodity> commodities = DatabaseManager.getDaoSession().getCommodityDao().loadAll();
         callBack.onSuccess(commodities);
     }
-
+    public static void loadInventorys(LoadDataCallBack<List<Inventory>> callBack) {
+        DatabaseManager.getDaoSession().clear();
+        List<Inventory> inventories = DatabaseManager.getDaoSession().getInventoryDao().loadAll();
+        callBack.onSuccess(inventories);
+    }
+    public static void loadInventory(long id,LoadDataCallBack<Inventory> callBack) {
+        DatabaseManager.getDaoSession().clear();
+        Inventory inventories = DatabaseManager.getDaoSession().getInventoryDao().load(id);
+        callBack.onSuccess(inventories);
+    }
     public static void loadInOrders(LoadDataCallBack<List<InOrder>> callBack, Date start, Date end) {
         DatabaseManager.getDaoSession().clear();
         List<InOrder> inOrders = DatabaseManager.getDaoSession().getInOrderDao().queryBuilder().where(InOrderDao.Properties.Time.ge(start.getTime()), InOrderDao.Properties.Time.le(end.getTime())).list();
